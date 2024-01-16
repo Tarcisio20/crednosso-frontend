@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import NextAuthSessionProvider from './providers/sessionProvider'
 
 export const metadata: Metadata = {
   title: 'CredNosso',
@@ -13,7 +14,9 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body className="bg-gray-950 text-gray-100">
-          {children}
+        <NextAuthSessionProvider>
+        {children}
+        </NextAuthSessionProvider>    
         </body>
     </html>
   )
