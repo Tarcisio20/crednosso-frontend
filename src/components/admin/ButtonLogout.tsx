@@ -13,5 +13,5 @@ export default function  ButtonLogout(){
     router.replace('/login')
  }  
  
- return <button onClick={logout}>Sair</button>
+ return <button onClick={logout} className="bg-red-800 py-1 px-4 rounded hover:bg-red-800/80">Sair</button>
 }
