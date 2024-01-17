@@ -1,4 +1,4 @@
-export type SupplyTypes = {
+export type SupplyTypes = [
     id : string,
 	id_atm : string,
 	supply_date : Date,
@@ -7,4 +7,4 @@ export type SupplyTypes = {
 	value_of_50 : number,
 	value_of_100 : number,
     status : boolean
-}
+]

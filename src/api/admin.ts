@@ -20,7 +20,6 @@ export const getAllSupply = async (token : string, idUser : string) => {
             headers : headersForReq
         }
         const json = await req.get('/admin/supply', config)
-        console.log(json.data)
         return json.data
     }catch(error){ return false }
 }
