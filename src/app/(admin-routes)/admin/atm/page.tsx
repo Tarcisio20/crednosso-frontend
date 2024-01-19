@@ -1,14 +1,11 @@
 "use client"
 
-import { nextAuthOptions } from "@/app/api/auth/[...nextauth]/route"
 import { ButtonForRedirects } from "@/components/admin/ButtonForRedirects"
 import { ButtonTableActions } from "@/components/admin/ButtonTableActions"
 import { TitlePage } from "@/components/admin/TitlePage"
-import { getServerSession } from "next-auth"
 
-const Page = async () => {
+const Page = () => {
     
-    const session = await getServerSession(nextAuthOptions)
     
     return(
         <>

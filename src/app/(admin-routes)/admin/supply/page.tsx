@@ -22,7 +22,7 @@ const Page =  () => {
     return(
         <>
             <TitlePage title="Abastecimentos" />
-            <ButtonForRedirects label="Adicionar" url="/admin/supply/add" />
+            <ButtonForRedirects label="Adicionar Abastecimento" url="/admin/supply/add" />
             {supplys  && supplys.length > 0 &&  <TablesScreen />}
             {supplys && supplys.length <= 0 && <p className="text-lg  text-red-400">Nada a mostrar</p>}
         </>
