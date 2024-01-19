@@ -23,3 +23,20 @@ export const getAllSupply = async (token : string, idUser : string) => {
         return json.data
     }catch(error){ return false }
 }
+
+export const getAllOrderType = async (token : string, idUser : string) => {
+    try {
+        const data = {}
+        const headersForReq = {
+            ...headersPadrao,
+            'Authorization' : `Token ${token}`,
+            'id' : idUser
+        }
+        const config : AxiosRequestConfig = {
+            headers : headersForReq
+        }
+        const json = await req.get('/admin/order_type', config)
+        return json.data
+
+    } catch(error) { return false }
+}

@@ -1,7 +1,25 @@
+"use client"
+
 import { ButtonForRedirects } from "@/components/admin/ButtonForRedirects"
 import { TitlePage } from "@/components/admin/TitlePage"
+import { useSession } from "next-auth/react"
+import { useEffect, useState } from "react"
+import * as apiAdmin from '@/api/admin'
 
 const Page = () => {
+
+    const { data : session, status } = useSession()
+    const [orderType, setOrderType] = useState()
+
+    useEffect(()=>{
+        getOrderType()
+    })
+
+    const getOrderType = async () => {
+        const data = await apiAdmin.getAllOrderType(session?.userReturn.token ?? '', session?.userReturn.idUser ?? '') 
+        setOrderType(data.orderTypes)
+    }
+    console.log(orderType)
     return(
         <>
             <TitlePage title="Adicionar Pedido" />
