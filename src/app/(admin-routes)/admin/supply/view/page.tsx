@@ -13,9 +13,9 @@ const Page = () => {
                 <div className="flex flex-col  gap-3 w-2/4 p-3">
                     <label className="uppercase font-bold">Data da Pesquisa</label>
                     <div className="flex flex-row items-center gap-3">
-                        <input className="outline-none rounded w-50 h-7" />
+                        <input className="outline-none rounded w-50 h-7 text-gray-900 text-center" />
                         <label className="flex items-center font-bold">até</label>
-                        <input className="outline-none rounded w-50 h-7" />
+                        <input className="outline-none rounded w-50 h-7 text-gray-900 text-center" />
                         <button className=" bg-yellow-500 inline-block  w-32 px-4 py-2 font-semibold uppercase text-gray-900 rounded hover:bg-yellow-600">Pesquisar</button>
                     </div>     
                 </div>
@@ -32,14 +32,14 @@ const Page = () => {
                 </div>
             </div>
             <Divider />
-            <div className="flex gap-1 px-3">
-                <input type="checkbox" className="outline-none" />
+            <div className="flex items-center gap-1 px-3">
+                <input type="checkbox" className="outline-none h-4 w-4 rounded" />
                 <label className="text-xs">Selecionar Tudo</label>
             </div>
             <div className="p-4">
-                <table width="100%" className="text-center table-auto border-collapse border">
+                <table width="100%" className="text-center table-auto border-collapse border rounded">
                     <thead>
-                        <tr className="bg-slate-500 text-lg border-b-2 border-y-slate-400" >
+                        <tr className="bg-slate-500 text-lg text-center border-b-2 border-y-slate-400 rounded" >
                             <th>X</th>
                             <th>Operação</th>
                             <th>Cod. Origem</th>
