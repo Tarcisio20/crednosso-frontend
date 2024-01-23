@@ -30,7 +30,6 @@ export const UserHome =  ({ token, idUser } : Props) => {
         const us = await getAllUser(token as string, idUser as string)
         setLoading(false)
         setUsers(us.users)
-        console.log(us)
     }
 
     const editUser = (id : string) => {
@@ -62,7 +61,7 @@ export const UserHome =  ({ token, idUser } : Props) => {
                                 <th>{item.name_full}</th>
                                 <th>{item.email}</th>
                                 <th>{item.user_type}</th>
-                                <th>{item.status}</th>
+                                <th>{item.status == true ? 'Ativo' : 'Inativo'}</th>
                                 <th className="flex justify-center  items-center gap-2">
                                     <ButtonTableActions label="Editar" page="user" idElement={item.id} type="edit" color="cyan" onclick={()=>editUser(item.id.toString())} />
                                     <ButtonTableActions label="Excluir" page="user" idElement={item.id} type="delete" color="red"  onclick={()=>{}} />

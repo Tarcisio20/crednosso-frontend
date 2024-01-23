@@ -59,7 +59,6 @@ export const getAllUser = async (token : string, idUser : string) => {
 
 export const getUserById = async (token : string, idUser : string, idEdit : string) => {
     try {
-        let data = {}
         const headersForReq = {
             ...headersPadrao,
             'Authorization' : `Token ${token}`,
@@ -69,6 +68,27 @@ export const getUserById = async (token : string, idUser : string, idEdit : stri
             headers : headersForReq
         }
         const json = await req.get(`/admin/user/${idEdit}`, config)
+
+        return json.data
+
+    } catch(error) { return false }
+}
+type AdduserProps = {
+    name : string;
+    email : string;
+    type : string;
+}
+export const addUser = async (token : string, idUser : string, data : AdduserProps) => {
+    try {
+        const headersForReq = {
+            ...headersPadrao,
+            'Authorization' : `Token ${token}`,
+            'id' : idUser
+        }
+        const config : AxiosRequestConfig = {
+            headers : headersForReq
+        }
+        const json = await req.post(`/admin/user`, data, config)
 
         return json.data
 
