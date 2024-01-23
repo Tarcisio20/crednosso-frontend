@@ -7,6 +7,8 @@ declare module 'next-auth' {
                 idUser : string
                 token : string
                 nivel : string
+                last_login : string
+                name: string
             }  
         
     }
