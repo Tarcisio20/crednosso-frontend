@@ -10,7 +10,6 @@ export const login = async (email : string, pass : string) => {
 
 export const getAllSupply = async (token : string, idUser : string) => {
     try{
-        const data = {}
         const headersForReq = {
             ...headersPadrao,
             'Authorization' : `Token ${token}`,
@@ -111,4 +110,36 @@ export const editUserById = async (token : string, idUser : string, idEdit : str
 
     } catch(error) { return false }
 }
+
+export const getOrderTypes = async (token : string, idUser : string) => {
+    try{
+        const headersForReq = {
+            ...headersPadrao,
+            'Authorization' : `Token ${token}`,
+            'id' : idUser
+        }
+        const config : AxiosRequestConfig = {
+            headers : headersForReq
+        }
+        const json = await req.get('/admin/order_type', config)
+        console.log("Dentro da API",json.data)
+        return json.data
+    }catch(error){ return false }
+}
+
+export const addOrderType = async (token : string, idUser : string, data : {  name_full : string }) => {
+    try{
+        const headersForReq = {
+            ...headersPadrao,
+            'Authorization' : `Token ${token}`,
+            'id' : idUser
+        }
+        const config : AxiosRequestConfig = {
+            headers : headersForReq
+        }
+        const json = await req.post('/admin/order_type', data, config)
+        return json.data
+    }catch(error){ return false }
+}
+
 

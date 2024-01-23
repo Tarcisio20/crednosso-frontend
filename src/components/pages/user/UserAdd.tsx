@@ -26,9 +26,6 @@ export const UserAdd = ({ token , idUser } : Props) => {
         setLoading(true)
         setMsgError('')
         if(nameUser !== '' && emailUser !== '' && nivelUser !== '' ){
-            console.log("NOME => ", nameUser)
-            console.log("email => ", emailUser)
-            console.log("NIVEL => ", nivelUser)
             const us = await addUser(token as string, idUser as string, {name : nameUser, email : emailUser, type : nivelUser} )
             if(us.error) setMsgError(us.error)
             if(us.success) router.push('/admin/user')
