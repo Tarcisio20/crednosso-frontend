@@ -1,10 +1,11 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { getOperationTypeById } from '@/api/admin'
+import { useParams, useRouter } from "next/navigation";
+import { getOperationTypeById, editOperartionType } from '@/api/admin'
 import { ButtonComuns } from "@/components/admin/ButtonComuns"
 import { TitlePage } from "@/components/admin/TitlePage"
+import { ErrorComponent } from "@/components/admin/ErrorComponent";
 
 type Props = {
     token : string | undefined;
@@ -14,10 +15,12 @@ type Props = {
 export const OperationTypeEdit = ({ token, idUser } : Props) => {
     
     const params = useParams()
+    const router = useRouter()
 
     const [nameOperationType, setNameOperationType] = useState('')
     const [statusOperationType, setStatusOperationType] = useState('')
     const [loading, setLoading] = useState(false)
+    const [msgError, setMsgError] = useState('')
 
     useEffect(()=>{
         getOperationTypeByIdFunction()
@@ -28,6 +31,27 @@ export const OperationTypeEdit = ({ token, idUser } : Props) => {
         const op = await getOperationTypeById(token as string, idUser as string, params.id.toString())
         setNameOperationType(op.operationType[0].name_full)
         setStatusOperationType(op.operationType[0].status === true ? '1' : '0')
+        setLoading(false)
+    }
+
+    const addOperationType = async () => {
+        setLoading(true)
+        if(nameOperationType !== '' && statusOperationType !== ''){
+            const OperationTypeEdited = await editOperartionType(token as string, idUser as string, params.id.toString(), 
+            { name_full : nameOperationType, status : statusOperationType === '1' ? true : false  }
+            )
+            if(OperationTypeEdited.error){
+                setMsgError(OperationTypeEdited.error)
+                return
+            }
+            if(!OperationTypeEdited.operationType){
+                setMsgError('Erro ao Editar, favor tentar novamente mais tarde!')
+                return
+            }
+            router.back()
+        }else{
+            setMsgError('Favor, Preencher todos os campos!')
+        }
         setLoading(false)
     }
 
@@ -54,8 +78,9 @@ export const OperationTypeEdit = ({ token, idUser } : Props) => {
                     </select>
                 </div>
                 <div className="flex items-center justify-center mt-3 w-2/3">
-                    <ButtonComuns label="Editar Tipo de Operação" color="green" onClick={()=>{}} />
+                    <ButtonComuns label={!loading ? "Editar Tipo de Operação" : "Aguarde ..."} disabled={loading} color="green" onClick={addOperationType} />
                 </div>
+                {!loading && msgError !== '' && <ErrorComponent label={msgError} />}
             </div>
         </>
     )

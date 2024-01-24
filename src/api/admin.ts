@@ -218,4 +218,36 @@ export const getOperationTypeById = async (token : string, idUser : string, idEd
     } catch(error) { return false }
 }
 
+export const editOperartionType = async (token : string, idUser : string, idEdit : string, data : { name_full : string, status : boolean }) => {
+    try {
+        const headersForReq = {
+            ...headersPadrao,
+            'Authorization' : `Token ${token}`,
+            'id' : idUser
+        }
+        const config : AxiosRequestConfig = {
+            headers : headersForReq
+        }
+        const json = await req.put(`/admin/operation_type/${idEdit}`, data,  config)
+        return json.data
+
+    } catch(error) { return false }
+}
+
+export const getAllTreasuries = async (token : string, idUser : string) => {
+    try {
+        const headersForReq = {
+            ...headersPadrao,
+            'Authorization' : `Token ${token}`,
+            'id' : idUser
+        }
+        const config : AxiosRequestConfig = {
+            headers : headersForReq
+        }
+        const json = await req.get(`/admin/treasury`,  config)
+        return json.data
+
+    } catch(error) { return false }
+}
+
 
