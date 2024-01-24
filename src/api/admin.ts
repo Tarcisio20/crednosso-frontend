@@ -141,4 +141,81 @@ export const addOrderType = async (token : string, idUser : string, data : {  na
     }catch(error){ return false }
 }
 
+export const getOrderTypeById = async (token : string, idUser : string, idEdit : string) => {
+    try{
+        const headersForReq = {
+            ...headersPadrao,
+            'Authorization' : `Token ${token}`,
+            'id' : idUser
+        }
+        const config : AxiosRequestConfig = {
+            headers : headersForReq
+        }
+        const json = await req.get(`/admin/order_type/${idEdit}`, config)
+        return json.data
+    }catch(error){ return false }
+}
+
+export const OrderTypeEdited = async (token : string, idUser : string, idEdit : string, data : { name_full : string, status : boolean }) => {
+    try{
+        const headersForReq = {
+            ...headersPadrao,
+            'Authorization' : `Token ${token}`,
+            'id' : idUser
+        }
+        const config : AxiosRequestConfig = {
+            headers : headersForReq
+        }
+        const json = await req.put(`/admin/order_type/${idEdit}`, data, config)
+        return json.data
+    }catch(error){ return false }
+}
+export const getAllOperationType = async (token : string, idUser : string) => {
+        try {
+            const headersForReq = {
+                ...headersPadrao,
+                'Authorization' : `Token ${token}`,
+                'id' : idUser
+            }
+            const config : AxiosRequestConfig = {
+                headers : headersForReq
+            }
+            const json = await req.get('/admin/operation_type', config)
+            return json.data
+
+        } catch(error) { return false }
+}
+
+export const addOperationType = async (token : string, idUser : string, data : { name_full : string }) => {
+    try {
+        const headersForReq = {
+            ...headersPadrao,
+            'Authorization' : `Token ${token}`,
+            'id' : idUser
+        }
+        const config : AxiosRequestConfig = {
+            headers : headersForReq
+        }
+        const json = await req.post('/admin/operation_type', data,  config)
+        return json.data
+
+    } catch(error) { return false }
+}
+
+export const getOperationTypeById = async (token : string, idUser : string, idEdit : string) => {
+    try {
+        const headersForReq = {
+            ...headersPadrao,
+            'Authorization' : `Token ${token}`,
+            'id' : idUser
+        }
+        const config : AxiosRequestConfig = {
+            headers : headersForReq
+        }
+        const json = await req.get(`/admin/operation_type/${idEdit}`,  config)
+        return json.data
+
+    } catch(error) { return false }
+}
+
 

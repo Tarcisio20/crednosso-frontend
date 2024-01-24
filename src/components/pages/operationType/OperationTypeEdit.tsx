@@ -1,9 +1,33 @@
 "use client"
 
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { getOperationTypeById } from '@/api/admin'
 import { ButtonComuns } from "@/components/admin/ButtonComuns"
 import { TitlePage } from "@/components/admin/TitlePage"
 
-const Page = () => {
+type Props = {
+    token : string | undefined;
+    idUser : string | undefined;
+}
+
+export const OperationTypeEdit = ({ token, idUser } : Props) => {
+    
+    const params = useParams()
+
+    const [loading, setLoading] = useState(false)
+
+    useEffect(()=>{
+        getOperationTypeByIdFunction()
+    }, [])
+
+    const getOperationTypeByIdFunction = async () => {
+        setLoading(true)
+        const OT = await getOperationTypeById(token as string, idUser as string, params.id.toString())
+        console.log(OT)
+        setLoading(false)
+    }
+
     return(
         <>
             <TitlePage title="Editar Tipo de Operação" />
@@ -11,7 +35,7 @@ const Page = () => {
                 <label className="text-center uppercase font-bold">Informações Gerais</label>
                 <div className="flex flex-col gap-2 w-1/3 text-center">
                     <label className="uppercase">Nome</label>
-                    <input className="h-6 rounded outline-none text-gray-900 text-center" />
+                    <input className="h-6 rounded outline-none text-gray-900 text-center" type="text" disabled={loading} />
                 </div>
                 <div className="flex flex-col gap-2 w-1/3 text-center">
                     <label className="uppercase">Status</label>
@@ -27,5 +51,3 @@ const Page = () => {
         </>
     )
 }
-
-export default Page

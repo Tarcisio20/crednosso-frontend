@@ -7,6 +7,7 @@ import { ButtonTableActions } from "@/components/admin/ButtonTableActions"
 import { TitlePage } from "@/components/admin/TitlePage"
 import { OrderTypeType } from "@/types/OrderTypeType"
 import { NothingToShow } from "@/components/admin/NothingToShow"
+import { useRouter } from "next/navigation"
 
 type Props = {
     token : string | undefined;
@@ -14,6 +15,8 @@ type Props = {
 }
 
 export const OrderTypeHome =  ({ token, idUser } : Props) => {
+
+    const router = useRouter()
 
     const [orderTypes, setOrderTypes] = useState<OrderTypeType[] | []>([])
     const [loading, setLoading] = useState(false)
@@ -27,6 +30,10 @@ export const OrderTypeHome =  ({ token, idUser } : Props) => {
         const ot = await getOrderTypes(token as string, idUser as string)
         setOrderTypes(ot.orderTypes)
         setLoading(false)
+    }
+
+    const edit = (id : number) => {
+        router.push(`/admin/orderType/edit/${id}`)
     }
 
     return (
@@ -52,7 +59,7 @@ export const OrderTypeHome =  ({ token, idUser } : Props) => {
                             <th>{item.name_full}</th>
                             <th>{item.status === true ? 'Ativo' : 'Inativo'}</th>
                             <th className="flex justify-center  items-center gap-2">
-                                <ButtonTableActions label="Editar" page="orderType" idElement={"1"} color="cyan" type="edit" onclick={()=>{}} />
+                                <ButtonTableActions label="Editar" page="orderType" idElement={"1"} color="cyan" type="edit" onclick={()=>edit(parseInt(item.id))} />
                                 <ButtonTableActions label="Excluir" page="orderType" color="red" idElement={"1"} type="del" onclick={()=>{}} />
                             </th>
                         </tr>
