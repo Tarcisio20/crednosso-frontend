@@ -15,6 +15,8 @@ export const OperationTypeEdit = ({ token, idUser } : Props) => {
     
     const params = useParams()
 
+    const [nameOperationType, setNameOperationType] = useState('')
+    const [statusOperationType, setStatusOperationType] = useState('')
     const [loading, setLoading] = useState(false)
 
     useEffect(()=>{
@@ -23,8 +25,9 @@ export const OperationTypeEdit = ({ token, idUser } : Props) => {
 
     const getOperationTypeByIdFunction = async () => {
         setLoading(true)
-        const OT = await getOperationTypeById(token as string, idUser as string, params.id.toString())
-        console.log(OT)
+        const op = await getOperationTypeById(token as string, idUser as string, params.id.toString())
+        setNameOperationType(op.operationType[0].name_full)
+        setStatusOperationType(op.operationType[0].status === true ? '1' : '0')
         setLoading(false)
     }
 
@@ -35,11 +38,17 @@ export const OperationTypeEdit = ({ token, idUser } : Props) => {
                 <label className="text-center uppercase font-bold">Informações Gerais</label>
                 <div className="flex flex-col gap-2 w-1/3 text-center">
                     <label className="uppercase">Nome</label>
-                    <input className="h-6 rounded outline-none text-gray-900 text-center" type="text" disabled={loading} />
+                    <input 
+                        className="h-6 rounded outline-none text-gray-900 text-center" 
+                        disabled={loading} 
+                        type="text" 
+                        value={nameOperationType}
+                        onChange={e=>setNameOperationType(e.target.value)}
+                    />
                 </div>
                 <div className="flex flex-col gap-2 w-1/3 text-center">
                     <label className="uppercase">Status</label>
-                    <select className="h-6 rounded outline-none text-gray-900 text-center">
+                    <select className="h-6 rounded outline-none text-gray-900 text-center" disabled={loading} value={statusOperationType} onChange={e=>setStatusOperationType(e.target.value)} >
                         <option value="1">Ativo</option>
                         <option value="0">Inativo</option>
                     </select>

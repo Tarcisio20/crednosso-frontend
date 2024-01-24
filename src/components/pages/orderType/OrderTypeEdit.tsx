@@ -32,6 +32,7 @@ export const OrderTypeEdit  = ({ token, idUser } : Props) => {
         setNameOrderType(ot.orderType.name_full)
         setStatusOrderType(ot.orderType.status === true ? '1' : '0')
         setLoading(false)
+        console.log(ot.orderType)
     }
 
     const editOrderType = async  ()  => {

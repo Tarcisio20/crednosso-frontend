@@ -29,10 +29,11 @@ export const OperationTypeHome =  ({ token, idUser } : Props) => {
         setLoading(true)
         const ot = await getAllOperationType(token as string, idUser as string)
         setOperationTypes(ot.operationType)
+        console.log(ot.operationType)
         setLoading(false)
-    }
+    }   
 
-    const edit =  (id : string) => {
+    const edit =  (id : number) => {
         router.push(`operationType/edit/${id}`)
     }
 
@@ -58,7 +59,7 @@ export const OperationTypeHome =  ({ token, idUser } : Props) => {
                             <th>{item.name_full}</th>
                             <th>{item.status === true ? 'Ativo' : 'Inativo'}</th>
                             <th className="flex justify-center  items-center gap-2">
-                                <ButtonTableActions label="Editar" page="operationType" type="edit" idElement={"1"} color="cyan" onclick={()=>edit(item.id.toString())} />
+                                <ButtonTableActions label="Editar" page="operationType" type="edit" idElement={"1"} color="cyan" onclick={()=>edit(parseInt(item.id))} />
                                 <ButtonTableActions label="Excluir" page="operationType" type="del" color="red" idElement={"1"} onclick={()=>{}} />
                             </th>
                         </tr>
@@ -66,7 +67,7 @@ export const OperationTypeHome =  ({ token, idUser } : Props) => {
                     </tbody>
                 </table>
                 )}
-                {!loading && operationTypes.length === 0 && <NothingToShow label='Tipos de Operação' />}
+                {!loading && operationTypes.length === 0 && <NothingToShow label='Tipo de Operação' />}
             </div>
         </>
     )

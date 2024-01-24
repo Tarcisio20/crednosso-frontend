@@ -69,7 +69,7 @@ export const OrderTypeHome =  ({ token, idUser } : Props) => {
                 </div>
             </>
             )}
-            {loading && orderTypes.length <= 0 &&   <NothingToShow label="tipo de pedido" />}
+            {loading && orderTypes.length === 0 &&   <NothingToShow label="tipo de pedido" />}
         </>
     )
 }
