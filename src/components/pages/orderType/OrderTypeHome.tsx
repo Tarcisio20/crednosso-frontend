@@ -1,10 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { getOrderTypes } from '@/api/admin'
 import { ButtonForRedirects } from "@/components/admin/ButtonForRedirects"
 import { ButtonTableActions } from "@/components/admin/ButtonTableActions"
 import { TitlePage } from "@/components/admin/TitlePage"
-import { getOrderTypes } from '@/api/admin'
 import { OrderTypeType } from "@/types/OrderTypeType"
 import { NothingToShow } from "@/components/admin/NothingToShow"
 
@@ -26,7 +26,6 @@ export const OrderTypeHome =  ({ token, idUser } : Props) => {
         setLoading(true)
         const ot = await getOrderTypes(token as string, idUser as string)
         setOrderTypes(ot.orderTypes)
-        console.log(ot.orderTypes)
         setLoading(false)
     }
 
@@ -34,7 +33,7 @@ export const OrderTypeHome =  ({ token, idUser } : Props) => {
         <>
             <TitlePage title="Tipos de Pedido" />
             <ButtonForRedirects label="Adicionar Tipo de Pedido" url="/admin/orderType/add" />
-            {!loading && orderTypes.length > 0  && (
+            {!loading && orderTypes.length > 0 &&  (
             <> 
                 <div className="p-4 w-full">
                     <table width="100%" className="text-center table-auto border-collapse border rounded">
@@ -47,41 +46,23 @@ export const OrderTypeHome =  ({ token, idUser } : Props) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {!loading && orderTypes.map((item, key)=>(
-                                <tr key={key} className="py-2 ">
-                                <th>{item.id}</th>
-                                <th>{item.name_full}</th>
-                                <th>{item.status === true ? 'Ativo' : 'Inatvo'}</th>
-                                <th className="flex justify-center  items-center gap-2">
-                                    <ButtonTableActions label="Editar" page="orderType" idElement={"1"} color="cyan" type="edit" onclick={()=>{}} />
-                                    <ButtonTableActions label="Excluir" page="orderType" color="red" idElement={"1"} type="del" onclick={()=>{}} />
-                                </th>
-                            </tr>
-                            ))}
-                            <tr className="py-2 ">
-                                <th>1</th>
-                                <th>Nome do tipo de Pedido</th>
-                                <th>1</th>
-                                <th className="flex justify-center  items-center gap-2">
-                                    <ButtonTableActions label="Editar" page="orderType" idElement={"1"} color="cyan" type="edit" onclick={()=>{}} />
-                                    <ButtonTableActions label="Excluir" page="orderType" color="red" idElement={"1"} type="del" onclick={()=>{}} />
-                                </th>
-                            </tr>
-                            <tr className="py-2 ">
-                                <th>2</th>
-                                <th>Nome do tipo de pedido 2</th>
-                                <th>1</th>
-                                <th className="flex justify-center  items-center gap-2">
-                                    <ButtonTableActions label="Editar" page="orderType" idElement={"2"} color="cyan" type="edit" onclick={()=>{}} />
-                                    <ButtonTableActions label="Excluir" page="orderType" idElement={"2"} color="red" type="del" onclick={()=>{}} />
-                                </th>
-                            </tr>
+                        {!loading && orderTypes.map((item, key)=>(
+                        <tr key={key} className="py-2 ">
+                            <th>{item.id}</th>
+                            <th>{item.name_full}</th>
+                            <th>{item.status === true ? 'Ativo' : 'Inativo'}</th>
+                            <th className="flex justify-center  items-center gap-2">
+                                <ButtonTableActions label="Editar" page="orderType" idElement={"1"} color="cyan" type="edit" onclick={()=>{}} />
+                                <ButtonTableActions label="Excluir" page="orderType" color="red" idElement={"1"} type="del" onclick={()=>{}} />
+                            </th>
+                        </tr>
+                        ))}
                         </tbody>
                     </table>
                 </div>
             </>
             )}
-            {loading && orderTypes.length <= 0 && <NothingToShow label="tipo de pedido" />}
+            {loading && orderTypes.length <= 0 &&   <NothingToShow label="tipo de pedido" />}
         </>
     )
 }

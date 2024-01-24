@@ -122,7 +122,6 @@ export const getOrderTypes = async (token : string, idUser : string) => {
             headers : headersForReq
         }
         const json = await req.get('/admin/order_type', config)
-        console.log("Dentro da API",json.data)
         return json.data
     }catch(error){ return false }
 }
