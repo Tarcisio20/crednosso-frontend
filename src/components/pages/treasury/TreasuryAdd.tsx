@@ -1,10 +1,13 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { addTreasury } from "@/api/admin";
+import { TitlePage } from "@/components/admin/TitlePage";
+import { ButtonComuns } from "@/components/admin/ButtonComuns";
 import { GenereateIndividualValuesCassetesInReal } from "@/Utils/GenereateIndividualValuesCassetesInReal";
 import { GenereateTotalValuesCassetesInReal } from "@/Utils/GenereateTotalValuesCassetesInReal";
-import { ButtonComuns } from "@/components/admin/ButtonComuns";
-import { TitlePage } from "@/components/admin/TitlePage";
-import { useEffect, useState } from "react";
+import { TreasuryType } from "@/types/TreasuryType";
+import { ErrorComponent } from "@/components/admin/ErrorComponent";
 
 type Props = {
   token: string | undefined;
@@ -26,6 +29,9 @@ export const TreasuryAdd = ({ token, idUser }: Props) => {
   const [cassDShowTreasury, setCassDShowTreasury] = useState("R$ 0,0");
 
   const [totalCassShow, setTotalCassShow] = useState("R$ 0,0");
+
+  const [loading, setLoading] = useState(false);
+  const [msgError, setMsgError] = useState("");
 
   useEffect(() => {
     setTotalCassShow(
@@ -68,6 +74,29 @@ export const TreasuryAdd = ({ token, idUser }: Props) => {
     }
   };
 
+  const addTreasuryFunction = async () => {
+    setLoading(true);
+    if (
+      idSystemTreasury !== "" &&
+      nameTreasury !== "" &&
+      shortNameTreasury !== ""
+    ) {
+      let data = {
+        id_system: idSystemTreasury,
+        name_full: nameTreasury,
+        shortened_name: shortNameTreasury,
+        balance_cass_10: cassATreasury.toString(),
+        balance_cass_20: cassBTreasury.toString(),
+        balance_cass_50: cassCTreasury.toString(),
+        balance_cass_100: cassDTreasury.toString(),
+      };
+      const addT = await addTreasury(token as string, idUser as string, data);
+    } else {
+      setMsgError("Favor, Preecher todos os campos!");
+    }
+    setLoading(false);
+  };
+
   return (
     <>
       <TitlePage title="Adicionar Tesouraria" />
@@ -82,6 +111,7 @@ export const TreasuryAdd = ({ token, idUser }: Props) => {
             type="text"
             value={idSystemTreasury}
             onChange={(e) => setIdSystemTreasury(e.target.value)}
+            disabled={loading}
           />
         </div>
         <div className="flex flex-col gap-2 w-1/3 text-center">
@@ -91,6 +121,7 @@ export const TreasuryAdd = ({ token, idUser }: Props) => {
             type="text"
             value={nameTreasury}
             onChange={(e) => setNameTreasury(e.target.value)}
+            disabled={loading}
           />
         </div>
         <div className="flex flex-col gap-2 w-1/3 text-center">
@@ -100,6 +131,7 @@ export const TreasuryAdd = ({ token, idUser }: Props) => {
             type="text"
             value={shortNameTreasury}
             onChange={(e) => setShortNameTreasury(e.target.value)}
+            disabled={loading}
           />
         </div>
 
@@ -122,24 +154,28 @@ export const TreasuryAdd = ({ token, idUser }: Props) => {
                 type="number"
                 value={cassATreasury}
                 onChange={(e) => alterValue(10, parseInt(e.target.value))}
+                disabled={loading}
               />
               <input
                 className="rounded text-center text-gray-900 outline-none h-8"
                 type="number"
                 value={cassBTreasury}
                 onChange={(e) => alterValue(20, parseInt(e.target.value))}
+                disabled={loading}
               />
               <input
                 className="rounded text-center text-gray-900 outline-none h-8"
                 type="number"
                 value={cassCTreasury}
                 onChange={(e) => alterValue(50, parseInt(e.target.value))}
+                disabled={loading}
               />
               <input
                 className="rounded text-center text-gray-900 outline-none h-8"
                 type="number"
                 value={cassDTreasury}
                 onChange={(e) => alterValue(100, parseInt(e.target.value))}
+                disabled={loading}
               />
             </div>
             <div className="flex flex-col gap-3 w-1/3">
@@ -167,11 +203,13 @@ export const TreasuryAdd = ({ token, idUser }: Props) => {
         </div>
         <div className="flex items-center justify-center mt-3 w-2/3">
           <ButtonComuns
-            label="Adicionar Tesouraria"
+            label={!loading ? "Adicionar Tesouraria" : "Aguarde ..."}
             color="green"
-            onClick={() => {}}
+            onClick={addTreasuryFunction}
+            disabled={loading}
           />
         </div>
+        {!loading && msgError !== "" && <ErrorComponent label={msgError} />}
       </div>
     </>
   );
