@@ -1,18 +1,22 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { TreasuryType } from "@/types/TreasuryType"
+import { useRouter } from "next/navigation"
 import { getAllTreasuries } from '@/api/admin'
-import { ButtonForRedirects } from "@/components/admin/ButtonForRedirects"
-import { ButtonTableActions } from "@/components/admin/ButtonTableActions"
+import { TreasuryType } from "@/types/TreasuryType"
 import { TitlePage } from "@/components/admin/TitlePage"
 import { NothingToShow } from "@/components/admin/NothingToShow"
+import { GenereateTotalValuesCassetesInReal } from "@/Utils/GenereateTotalValuesCassetesInReal"
+import { ButtonForRedirects } from "@/components/admin/ButtonForRedirects"
+import { ButtonTableActions } from "@/components/admin/ButtonTableActions"
 type Props = {
     token : string | undefined;
     idUser : string | undefined;
 }
 
 export const TreasuryHome =  ({ token, idUser } : Props) => {
+
+    const router = useRouter()
 
     const [treasuries, setTreasuries] = useState<TreasuryType[] | []>([])
     const [loading, setLoading] = useState(false)
@@ -24,8 +28,13 @@ export const TreasuryHome =  ({ token, idUser } : Props) => {
     const getAllTreasuriesFunction =  async () => {
         setLoading(true)
         const allt = await getAllTreasuries(token as string, idUser as string)
-        setTreasuries(allt.treasuries)
+        setTreasuries(allt.atms)
         setLoading(false)
+    }
+
+    const edit = (id : string) => {
+        router.push(`treasury/edit/${id}`)
+        return
     }
 
     return (
@@ -40,43 +49,25 @@ export const TreasuryHome =  ({ token, idUser } : Props) => {
                             <th>Id</th>
                             <th>Nome Completo</th>
                             <th>Nome Reduzido</th>
-                            <th>Saldo R$ 10,00</th>
-                            <th>Saldo R$ 20,00</th>
-                            <th>Saldo R$ 50,00</th>
-                            <th>Saldo R$ 100,00</th>
+                            <th>Saldo </th>
                             <th>Status</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr className="py-2 ">
-                            <th>1</th>
-                            <th>Tesouraria 1</th>
-                            <th>Tesouraria Reduzido</th>
-                            <th>R$ 00,00</th>
-                            <th>R$ 00,00</th>
-                            <th>R$ 00,00</th>
-                            <th>R$ 00,00</th>
-                            <th>1</th>
+                        {!loading && treasuries.length > 0 && treasuries.map((item, key) =>(
+                        <tr key={key} className="py-2 ">
+                            <th>{item.id_system}</th>
+                            <th>{item.name_full}</th>
+                            <th>{item.shortened_name}</th>
+                            <th>{ GenereateTotalValuesCassetesInReal( parseFloat(item.balance_cass_10), parseFloat(item.balance_cass_20), parseFloat(item.balance_cass_50), parseFloat(item.balance_cass_100) ) }</th>
+                            <th>{item.status === true ? 'Ativo' : 'Inativo'}</th>
                             <th className="flex justify-center  items-center gap-2">
-                                <ButtonTableActions label="Editar" page="treasury" idElement={"1"} type="edit" color="cyan" onclick={()=>{}} />
+                                <ButtonTableActions label="Editar" page="treasury" idElement={"1"} type="edit" color="cyan" onclick={()=>edit(item.id.toString())} />
                                 <ButtonTableActions label="Rejeitar" page="treasury" color="red" type="del" idElement={"1"} onclick={()=>{}} />
                             </th>
                         </tr>
-                        <tr className="py-2 ">
-                            <th>2</th>
-                            <th>Tesouraria 2</th>
-                            <th>Tesouraria Reduzido</th>
-                            <th>R$ 00,00</th>
-                            <th>R$ 00,00</th>
-                            <th>R$ 00,00</th>
-                            <th>R$ 00,00</th>
-                            <th>1</th>
-                            <th className="flex justify-center  items-center gap-2">
-                                <ButtonTableActions label="Editar" page="treasury" idElement={"2"} type="edit" color="cyan" onclick={()=>{}} />
-                                <ButtonTableActions label="Rejeitar" page="treasury" idElement={"2"} type="del" color="red" onclick={()=>{}} />
-                            </th>
-                        </tr>
+                        ))}
                     </tbody>
                 </table>
                 )}

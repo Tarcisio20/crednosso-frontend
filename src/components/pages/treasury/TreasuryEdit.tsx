@@ -1,21 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { addTreasury } from "@/api/admin";
+import { useParams, useRouter } from "next/navigation";
+import { getTreasuryById, editTreasury } from "@/api/admin";
 import { TitlePage } from "@/components/admin/TitlePage";
 import { ButtonComuns } from "@/components/admin/ButtonComuns";
 import { GenereateIndividualValuesCassetesInReal } from "@/Utils/GenereateIndividualValuesCassetesInReal";
 import { GenereateTotalValuesCassetesInReal } from "@/Utils/GenereateTotalValuesCassetesInReal";
 import { ErrorComponent } from "@/components/admin/ErrorComponent";
-import { useRouter } from "next/navigation";
+import { error } from "console";
 
 type Props = {
   token: string | undefined;
   idUser: string | undefined;
 };
 
-export const TreasuryAdd = ({ token, idUser }: Props) => {
+export const TreasuryEdit = ({ token, idUser }: Props) => {
 
+    const params = useParams()
   const router = useRouter()
 
   const [idSystemTreasury, setIdSystemTreasury] = useState("");
@@ -26,6 +28,7 @@ export const TreasuryAdd = ({ token, idUser }: Props) => {
   const [cassBTreasury, setCassBTreasury] = useState(0);
   const [cassCTreasury, setCassCTreasury] = useState(0);
   const [cassDTreasury, setCassDTreasury] = useState(0);
+  const [statusTreasury, setStatusTreasury] = useState('');
 
   const [cassAShowTreasury, setCassAShowTreasury] = useState("R$ 0,0");
   const [cassBShowTreasury, setCassBShowTreasury] = useState("R$ 0,0");
@@ -37,6 +40,10 @@ export const TreasuryAdd = ({ token, idUser }: Props) => {
   const [loading, setLoading] = useState(false);
   const [msgError, setMsgError] = useState("");
 
+    useEffect(()=>{
+        getTreasuryFunction()
+    }, [])
+
   useEffect(() => {
     setTotalCassShow(
       GenereateTotalValuesCassetesInReal(
@@ -47,6 +54,21 @@ export const TreasuryAdd = ({ token, idUser }: Props) => {
       )
     );
   }, [cassATreasury, cassBTreasury, cassCTreasury, cassDTreasury]);
+
+  const getTreasuryFunction = async () => {
+    setLoading(true)
+    const t = await getTreasuryById(token as string, idUser as  string, params.id.toString())
+    setIdSystemTreasury(t.treasury[0].id_system)
+    setNameTreasury(t.treasury[0].name_full)
+    setShortNameTreasury(t.treasury[0].shortened_name)
+    setCountTreasury(t.treasury[0].number_count || 0)
+    setCassATreasury(t.treasury[0].balance_cass_10)
+    setCassBTreasury(t.treasury[0].balance_cass_20)
+    setCassCTreasury(t.treasury[0].balance_cass_50)
+    setCassDTreasury(t.treasury[0].balance_cass_100)
+    setStatusTreasury(t.treasury[0].status === true ? '1' : '0')
+    setLoading(false)
+  }
 
   const alterValue = (type: number, value: number) => {
     if (value < 0) value = 0;
@@ -78,29 +100,32 @@ export const TreasuryAdd = ({ token, idUser }: Props) => {
     }
   };
 
-  const addTreasuryFunction = async () => {
+  const editTreasuryFunction = async () => {
     setLoading(true);
+    setMsgError('')
     if (
       idSystemTreasury !== "" &&
       nameTreasury !== "" &&
       shortNameTreasury !== ""
     ) {
       let data = {
-        id_system: idSystemTreasury,
+        id_system: idSystemTreasury.toString(),
         name_full: nameTreasury,
         shortened_name: shortNameTreasury,
-        number_count: countTreasury,
+       // number_count: countTreasury,
         balance_cass_10: cassATreasury.toString(),
         balance_cass_20: cassBTreasury.toString(),
         balance_cass_50: cassCTreasury.toString(),
         balance_cass_100: cassDTreasury.toString(),
       };
-      const addT = await addTreasury(token as string, idUser as string, data);
-      if(!addT.success){
-        setMsgError('Erro ao salvar Tesouraria, favor tentar mais tarde!')
-        return
-      }else{
+      const editT = await editTreasury(token as string, idUser as string, params.id.toString(), data);
+      console.log(editT)
+      if(editT.error){
+        setMsgError(editT.error)
+      } 
+      if(editT.success){
         router.back()
+        return
       }
     } else {
       setMsgError("Favor, Preecher todos os campos!");
@@ -110,7 +135,7 @@ export const TreasuryAdd = ({ token, idUser }: Props) => {
 
   return (
     <>
-      <TitlePage title="Adicionar Tesouraria" />
+      <TitlePage title="Editar Tesouraria" />
       <div className="flex flex-col gap-2 items-center justify-center w-full">
         <label className="text-center uppercase font-bold">
           Informações Gerais
@@ -155,6 +180,14 @@ export const TreasuryAdd = ({ token, idUser }: Props) => {
             onChange={(e) => setCountTreasury(e.target.value)}
             disabled={loading}
           />
+        </div>
+
+        <div className="flex flex-col gap-2 w-1/3 text-center">
+          <label className="uppercase">Status</label>
+          <select  className="h-6 rounded outline-none text-gray-900 text-center" disabled={loading} value={statusTreasury} onChange={e=>setStatusTreasury(e.target.value)} >
+            <option value="0">Inativo</option>
+            <option value="1">Ativo</option>
+          </select>
         </div>
 
         <div className="flex flex-col gap-2 w-1/3 text-center mt-3">
@@ -225,9 +258,9 @@ export const TreasuryAdd = ({ token, idUser }: Props) => {
         </div>
         <div className="flex items-center justify-center mt-3 w-2/3">
           <ButtonComuns
-            label={!loading ? "Adicionar Tesouraria" : "Aguarde ..."}
+            label={!loading ? "Editar Tesouraria" : "Aguarde ..."}
             color="green"
-            onClick={addTreasuryFunction}
+            onClick={editTreasuryFunction}
             disabled={loading}
           />
         </div>
