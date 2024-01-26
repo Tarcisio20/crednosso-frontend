@@ -25,15 +25,15 @@ export const OperationTypeAdd = ({ token, idUser } : Props) => {
         setMsgError('')
         if(nameOperationType !== ''){
             const addOT = await addOperationType(token as string, idUser as string, { name_full : nameOperationType })
+            console.log(addOT)
             if(addOT.error){
                 setMsgError(addOT.error)
-                return
             }
-            if(!addOT.succes){
+            if(addOT.success){
+                router.back()
+            }else{
                 setMsgError('Erro ao salvar, favor tentar novamente mais tarde!')
-                return
             }
-            router.back()
         }else{
             setMsgError('Favor, Preencer todos os campos!')
         }

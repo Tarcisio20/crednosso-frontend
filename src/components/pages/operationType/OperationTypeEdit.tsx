@@ -42,13 +42,12 @@ export const OperationTypeEdit = ({ token, idUser } : Props) => {
             )
             if(OperationTypeEdited.error){
                 setMsgError(OperationTypeEdited.error)
-                return
             }
-            if(!OperationTypeEdited.operationType){
+            if(OperationTypeEdited.operationType){
+                router.back()
+            }else{
                 setMsgError('Erro ao Editar, favor tentar novamente mais tarde!')
-                return
             }
-            router.back()
         }else{
             setMsgError('Favor, Preencher todos os campos!')
         }

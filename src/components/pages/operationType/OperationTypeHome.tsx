@@ -29,7 +29,6 @@ export const OperationTypeHome =  ({ token, idUser } : Props) => {
         setLoading(true)
         const ot = await getAllOperationType(token as string, idUser as string)
         setOperationTypes(ot.operationType)
-        console.log(ot.operationType)
         setLoading(false)
     }   
 
