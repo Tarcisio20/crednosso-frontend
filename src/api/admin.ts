@@ -317,7 +317,7 @@ type TreasuryAddProps = {
   id_system: string;
   name_full: string;
   shortened_name: string;
-  number_count : string;
+  number_count: string;
   balance_cass_10: string;
   balance_cass_20: string;
   balance_cass_50: string;
@@ -344,7 +344,11 @@ export const addTreasury = async (
   }
 };
 
-export const getTreasuryById = async (token : string, idUser : string, id : string) => {
+export const getTreasuryById = async (
+  token: string,
+  idUser: string,
+  id: string
+) => {
   try {
     const headersForReq = {
       ...headersPadrao,
@@ -359,13 +363,13 @@ export const getTreasuryById = async (token : string, idUser : string, id : stri
   } catch (error) {
     return false;
   }
-}
+};
 
 type TreasuryEditProps = {
   id_system: string;
   name_full: string;
   shortened_name: string;
- // number_count?: string;
+  // number_count?: string;
   balance_cass_10: string;
   balance_cass_20: string;
   balance_cass_50: string;
@@ -374,8 +378,8 @@ type TreasuryEditProps = {
 export const editTreasury = async (
   token: string,
   idUser: string,
-  idEdit : string,
-  data: TreasuryEditProps,
+  idEdit: string,
+  data: TreasuryEditProps
 ) => {
   try {
     const headersForReq = {
@@ -386,10 +390,12 @@ export const editTreasury = async (
     const config: AxiosRequestConfig = {
       headers: headersForReq,
     };
-    console.log(data)
+    console.log(data);
     const json = await req.put(`/admin/treasury/${idEdit}`, data, config);
     return json.data;
   } catch (error) {
     return false;
   }
 };
+
+export const AddOrder = async (token: string, idUser: string, data: {}) => {};

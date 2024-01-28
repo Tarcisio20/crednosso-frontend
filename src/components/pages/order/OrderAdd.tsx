@@ -280,6 +280,9 @@ export const OrderAdd = ({ token, idUser }: Props) => {
               {valueTotal}
             </div>
           </div>
+          <div className=" flex justify-center items-center h-6 rounded w-full">
+            <input className="h-8 outline-none rounded  w-full text-black px-1" />
+          </div>
         </div>
       </div>
       <ButtonComuns
