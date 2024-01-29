@@ -1,13 +1,13 @@
 "use client"
 
-import { getAllAtms, getAllTreasuries } from "@/api/admin"
+import { useEffect, useState } from "react"
+import { AtmType } from "@/types/AtmType"
+import { TreasuryType } from "@/types/TreasuryType"
+import { getAllAtms, getAllTreasuries, getTreasuryById } from "@/api/admin"
 import { ButtonForRedirects } from "@/components/admin/ButtonForRedirects"
 import { ButtonTableActions } from "@/components/admin/ButtonTableActions"
 import { NothingToShow } from "@/components/admin/NothingToShow"
 import { TitlePage } from "@/components/admin/TitlePage"
-import { AtmType } from "@/types/AtmType"
-import { TreasuryType } from "@/types/TreasuryType"
-import { useEffect, useState } from "react"
 
 type Props = {
     token : string | undefined;
@@ -35,13 +35,14 @@ export const AtmHome = ({ token , idUser } : Props) => {
     const getTreasuriesFunction = async () => {
         setLoading(true)
         const t = await getAllTreasuries(token as string, idUser as string)
-        setTreasuries(t.amts)
+        setTreasuries(t.atms)
         setLoading(false)
     }
 
-    const returnNameTreasury = (id : string) => {
-        console.log(treasuries)
+    const nameTreasuryById = (id : string) => {
         for(let x = 0; x < treasuries.length; x++){
+            console.log("Dentro do for")
+            console.log(treasuries[x].id_system)
             if(id == treasuries[x].id_system){
                 return treasuries[x].shortened_name
             }
@@ -68,12 +69,12 @@ export const AtmHome = ({ token , idUser } : Props) => {
                     </thead>
                     <tbody>
                     {!loading && atms.map((item, key) => (
-                       <tr className="py-2 ">
+                       <tr key={key} className="py-2 ">
                         <th>{item.id}</th>
                         <th>{item.name_full}</th>
                         <th>{item.shortened_name}</th>
-                        <th>{returnNameTreasury(item.id_treasury)}</th>
-                        <th>{item.status}</th>
+                        <th> {nameTreasuryById(item.id_treasury)}</th>
+                        <th>{item.status === true ? 'Ativo' : 'Inativo'}</th>
                         <th className="flex justify-center  items-center gap-2">
                             <ButtonTableActions label="Editar" color="cyan" page="atm" type="edit"  idElement="1" onclick={()=>{}} />
                             <ButtonTableActions label="Excluir" color="red" page="atm" type="edit"  idElement="1" onclick={()=>{}} />
