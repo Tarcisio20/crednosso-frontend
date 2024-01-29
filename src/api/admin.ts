@@ -397,6 +397,7 @@ export const editTreasury = async (
     return false;
   }
 };
+
 type OrderProps = {
   order_date: string;
   batch: string;
@@ -433,3 +434,51 @@ export const AddOrder = async (
     return false;
   }
 };
+
+export const getAllAtms = async (token: string, idUser: string) => {
+  try {
+    const headersForReq = {
+      ...headersPadrao,
+      Authorization: `Token ${token}`,
+      id: idUser,
+    };
+    const config: AxiosRequestConfig = {
+      headers: headersForReq,
+    };
+    const json = await req.get(`/admin/atm`, config);
+    return json.data;
+  } catch (error) {
+    return false;
+  }
+}
+
+type AddAtmProps = {
+  id_system : string;
+  name_full : string;
+  shortened_name : string;
+  id_treasury :  string;
+  config_cass_A : string;
+  config_cass_B : string;
+  config_cass_C : string;
+  config_cass_D : string;
+  balance_cass_A : string;
+  balance_cass_B : string;
+  balance_cass_C : string;
+  balance_cass_D : string;
+}
+export const AddAtm = async (token: string, idUser: string, data : AddAtmProps) => {
+  try {
+    const headersForReq = {
+      ...headersPadrao,
+      Authorization: `Token ${token}`,
+      id: idUser,
+    };
+    const config: AxiosRequestConfig = {
+      headers: headersForReq,
+    };
+    const json = await req.post(`/admin/atm`, data,  config);
+    return json.data;
+  } catch (error) {
+    return false;
+  }
+}

@@ -17,6 +17,7 @@ import { GenereateTotalValuesCassetesInReal } from "@/Utils/GenereateTotalValues
 import { ButtonComuns } from "@/components/admin/ButtonComuns";
 import { ErrorComponent } from "@/components/admin/ErrorComponent";
 import { useRouter } from "next/navigation";
+import { TransformData } from "@/Utils/TransformData";
 
 type Props = {
   token: string | undefined;
@@ -107,8 +108,10 @@ export const OrderAdd = ({ token, idUser }: Props) => {
       idTreasuryDestiny !== "" &&
       idOrderType !== ""
     ) {
+       
       const or = await AddOrder(token as string, idUser as string, {
-        order_date: dateOrder,
+        
+        order_date:  TransformData(dateOrder),
         batch: "0",
         id_origin_treasury: idTreasuryOrigin,
         id_destiny_treasury: idTreasuryDestiny,
