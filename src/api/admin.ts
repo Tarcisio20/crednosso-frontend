@@ -397,5 +397,39 @@ export const editTreasury = async (
     return false;
   }
 };
-
-export const AddOrder = async (token: string, idUser: string, data: {}) => {};
+type OrderProps = {
+  order_date: string;
+  batch: string;
+  id_origin_treasury: string;
+  id_destiny_treasury: string;
+  id_operation_type: string;
+  id_order_type: string;
+  batch_treasury: string;
+  value_of_10: string;
+  value_of_20: string;
+  value_of_50: string;
+  value_of_100: string;
+  observation: string;
+};
+export const AddOrder = async (
+  token: string,
+  idUser: string,
+  data: OrderProps
+) => {
+  console.log(data);
+  try {
+    const headersForReq = {
+      ...headersPadrao,
+      Authorization: `Token ${token}`,
+      id: idUser,
+    };
+    const config: AxiosRequestConfig = {
+      headers: headersForReq,
+    };
+    console.log(data);
+    const json = await req.post(`/admin/order`, data, config);
+    return json.data;
+  } catch (error) {
+    return false;
+  }
+};

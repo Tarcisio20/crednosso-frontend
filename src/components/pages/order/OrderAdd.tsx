@@ -5,6 +5,7 @@ import {
   getAllOperationType,
   getAllTreasuries,
   getOrderTypes,
+  AddOrder,
 } from "@/api/admin";
 import { ButtonForRedirects } from "@/components/admin/ButtonForRedirects";
 import { TitlePage } from "@/components/admin/TitlePage";
@@ -12,9 +13,10 @@ import { OrderTypeType } from "@/types/OrderTypeType";
 import { OperationTypeType } from "@/types/OperationTypeType";
 import { TreasuryType } from "@/types/TreasuryType";
 import { GenereateIndividualValuesCassetesInReal } from "@/Utils/GenereateIndividualValuesCassetesInReal";
-import { generateKey } from "crypto";
 import { GenereateTotalValuesCassetesInReal } from "@/Utils/GenereateTotalValuesCassetesInReal";
 import { ButtonComuns } from "@/components/admin/ButtonComuns";
+import { ErrorComponent } from "@/components/admin/ErrorComponent";
+import { useRouter } from "next/navigation";
 
 type Props = {
   token: string | undefined;
@@ -22,6 +24,8 @@ type Props = {
 };
 
 export const OrderAdd = ({ token, idUser }: Props) => {
+  const router = useRouter();
+
   const [orderTypes, setOrderTypes] = useState<OrderTypeType[] | []>([]);
   const [operationTypes, setOperationTypes] = useState<
     OperationTypeType[] | []
@@ -37,6 +41,7 @@ export const OrderAdd = ({ token, idUser }: Props) => {
   const [cassB, setCassB] = useState(0);
   const [cassC, setCassC] = useState(0);
   const [cassD, setCassD] = useState(0);
+  const [obs, setObs] = useState("");
 
   const [cassAValue, setCassAValue] = useState("R$ 0,0");
   const [cassBValue, setCassBValue] = useState("R$ 0,0");
@@ -45,6 +50,7 @@ export const OrderAdd = ({ token, idUser }: Props) => {
   const [valueTotal, setValueTotal] = useState("R$ 0,0");
 
   const [loading, setLoading] = useState(false);
+  const [msgError, setMsgError] = useState("");
 
   useEffect(() => {
     getAllItemsForScreen();
@@ -71,6 +77,7 @@ export const OrderAdd = ({ token, idUser }: Props) => {
   };
 
   const alterCass = (type: number, value: number) => {
+    if (value < 0) value = 0;
     switch (type) {
       case 10:
         setCassA(value);
@@ -91,6 +98,39 @@ export const OrderAdd = ({ token, idUser }: Props) => {
     }
   };
 
+  const addOrderFunction = async () => {
+    setMsgError("");
+    setLoading(true);
+    if (
+      dateOrder !== "" &&
+      idTreasuryOrigin !== "" &&
+      idTreasuryDestiny !== "" &&
+      idOrderType !== ""
+    ) {
+      const or = await AddOrder(token as string, idUser as string, {
+        order_date: dateOrder,
+        batch: "0",
+        id_origin_treasury: idTreasuryOrigin,
+        id_destiny_treasury: idTreasuryDestiny,
+        id_operation_type: idOperationType,
+        id_order_type: idOrderType,
+        batch_treasury: "0",
+        value_of_10: cassA.toString(),
+        value_of_20: cassB.toString(),
+        value_of_50: cassC.toString(),
+        value_of_100: cassD.toString(),
+        observation: obs,
+      });
+      if (or.error) setMsgError(or.error);
+      if (or.success) {
+        router.back();
+      }
+    } else {
+      setMsgError("Favor, Preencher todos os campos!");
+    }
+    setLoading(false);
+  };
+
   return (
     <>
       <TitlePage title="Adicionar Pedido" />
@@ -105,11 +145,13 @@ export const OrderAdd = ({ token, idUser }: Props) => {
                 type="text"
                 value={idOperationType}
                 onChange={(e) => setIdOperationType(e.target.value)}
+                disabled={loading}
               />
               <select
                 className="text-gray-900 outline-none border-2 border-gray-600 rounded min-w-52"
                 value={idOperationType}
                 onChange={(e) => setIdOperationType(e.target.value)}
+                disabled={loading}
               >
                 <option value=""></option>
                 {!loading &&
@@ -130,11 +172,13 @@ export const OrderAdd = ({ token, idUser }: Props) => {
                 type="text"
                 value={idTreasuryOrigin}
                 onChange={(e) => setIdTreasuryOrigin(e.target.value)}
+                disabled={loading}
               />
               <select
                 className="text-gray-900 outline-none border-2 border-gray-600 rounded min-w-52"
                 value={idTreasuryOrigin}
                 onChange={(e) => setIdTreasuryOrigin(e.target.value)}
+                disabled={loading}
               >
                 <option value=""></option>
                 {!loading &&
@@ -155,11 +199,13 @@ export const OrderAdd = ({ token, idUser }: Props) => {
                 type="text"
                 value={idTreasuryDestiny}
                 onChange={(e) => setIdTreasuryDestiny(e.target.value)}
+                disabled={loading}
               />
               <select
                 className="text-gray-900 outline-none border-2 border-gray-600 rounded min-w-52"
                 value={idTreasuryDestiny}
                 onChange={(e) => setIdTreasuryDestiny(e.target.value)}
+                disabled={loading}
               >
                 <option value=""></option>
                 {!loading &&
@@ -180,6 +226,7 @@ export const OrderAdd = ({ token, idUser }: Props) => {
                 type="date"
                 value={dateOrder}
                 onChange={(e) => setDateOrder(e.target.value)}
+                disabled={loading}
               />
             </div>
           </div>
@@ -192,12 +239,15 @@ export const OrderAdd = ({ token, idUser }: Props) => {
                 type="text"
                 value={idOrderType}
                 onChange={(e) => setIdOrderType(e.target.value)}
+                disabled={loading}
               />
               <select
                 className="text-gray-900 outline-none border-2 border-gray-600 rounded min-w-52"
                 value={idOrderType}
                 onChange={(e) => setIdOrderType(e.target.value)}
+                disabled={loading}
               >
+                <option value=""></option>
                 {!loading &&
                   orderTypes.map((item, key) => (
                     <option key={key} value={item.id}>
@@ -239,21 +289,25 @@ export const OrderAdd = ({ token, idUser }: Props) => {
                 className="w-20 h-6 text-gray-900 text-center outline-none rounded"
                 value={cassA}
                 onChange={(e) => alterCass(10, parseInt(e.target.value))}
+                disabled={loading}
               />
               <input
                 className="w-20 h-6 text-gray-900 text-center outline-none rounded"
                 value={cassB}
                 onChange={(e) => alterCass(20, parseInt(e.target.value))}
+                disabled={loading}
               />
               <input
                 className="w-20 h-6 text-gray-900 text-center outline-none rounded"
                 value={cassC}
                 onChange={(e) => alterCass(50, parseInt(e.target.value))}
+                disabled={loading}
               />
               <input
                 className="w-20 h-6 text-gray-900 text-center outline-none rounded"
                 value={cassD}
                 onChange={(e) => alterCass(100, parseInt(e.target.value))}
+                disabled={loading}
               />
             </div>
             <div className=" w-full flex flex-col gap-4 text-center items-center">
@@ -281,16 +335,22 @@ export const OrderAdd = ({ token, idUser }: Props) => {
             </div>
           </div>
           <div className=" flex justify-center items-center h-6 rounded w-full">
-            <input className="h-8 outline-none rounded  w-full text-black px-1" />
+            <input
+              className="h-8 outline-none rounded  w-full text-black px-1"
+              value={obs}
+              onChange={(e) => setObs(e.target.value)}
+              disabled={loading}
+            />
           </div>
         </div>
       </div>
       <ButtonComuns
         color="cyan"
         label={!loading ? "Salvar Pedido" : "Aguarde..."}
-        onClick={() => {}}
+        onClick={addOrderFunction}
         disabled={loading}
       />
+      {!loading && msgError !== "" && <ErrorComponent label={msgError} />}
     </>
   );
 };
