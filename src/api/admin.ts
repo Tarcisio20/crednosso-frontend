@@ -482,3 +482,49 @@ export const AddAtm = async (token: string, idUser: string, data : AddAtmProps) 
     return false;
   }
 }
+
+export const getAtmById = async (token: string, idUser: string, id : string) => {
+  try {
+    const headersForReq = {
+      ...headersPadrao,
+      Authorization: `Token ${token}`,
+      id: idUser,
+    };
+    const config: AxiosRequestConfig = {
+      headers: headersForReq,
+    };
+    const json = await req.get(`/admin/atm/${id}`,  config);
+    return json.data;
+  } catch (error) {
+    return false;
+  }
+}
+
+type EditAtmProps = {
+  id_system : string;
+  name_full : string;
+  shortened_name : string;
+  id_treasury :  string;
+  config_cass_A : string;
+  config_cass_B : string;
+  config_cass_C : string;
+  config_cass_D : string;
+ 
+  status : boolean;
+}
+export const editAtm = async (token: string, idUser: string, idEdit : string, data : EditAtmProps) => {
+  try {
+    const headersForReq = {
+      ...headersPadrao,
+      Authorization: `Token ${token}`,
+      id: idUser,
+    };
+    const config: AxiosRequestConfig = {
+      headers: headersForReq,
+    };
+    const json = await req.put(`/admin/atm/${idEdit}`, data,  config);
+    return json.data;
+  } catch (error) {
+    return false;
+  }
+}

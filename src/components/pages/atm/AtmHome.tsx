@@ -8,6 +8,7 @@ import { ButtonForRedirects } from "@/components/admin/ButtonForRedirects"
 import { ButtonTableActions } from "@/components/admin/ButtonTableActions"
 import { NothingToShow } from "@/components/admin/NothingToShow"
 import { TitlePage } from "@/components/admin/TitlePage"
+import { useRouter } from "next/navigation"
 
 type Props = {
     token : string | undefined;
@@ -15,6 +16,8 @@ type Props = {
 }
 
 export const AtmHome = ({ token , idUser } : Props) => {
+
+    const router = useRouter()
 
     const [atms, setAtms] = useState<AtmType[] | []>([])
     const [treasuries, setTreasuries] = useState<TreasuryType[] | []>([])
@@ -35,19 +38,21 @@ export const AtmHome = ({ token , idUser } : Props) => {
     const getTreasuriesFunction = async () => {
         setLoading(true)
         const t = await getAllTreasuries(token as string, idUser as string)
-        setTreasuries(t.atms)
+        setTreasuries(t.treasuries)
         setLoading(false)
     }
 
     const nameTreasuryById = (id : string) => {
         for(let x = 0; x < treasuries.length; x++){
-            console.log("Dentro do for")
-            console.log(treasuries[x].id_system)
             if(id == treasuries[x].id_system){
                 return treasuries[x].shortened_name
             }
         }
         return ''
+    }
+
+    const edit = (id : string) => {
+        router.push(`atm/edit/${id}`)
     }
 
     return(
@@ -76,7 +81,7 @@ export const AtmHome = ({ token , idUser } : Props) => {
                         <th> {nameTreasuryById(item.id_treasury)}</th>
                         <th>{item.status === true ? 'Ativo' : 'Inativo'}</th>
                         <th className="flex justify-center  items-center gap-2">
-                            <ButtonTableActions label="Editar" color="cyan" page="atm" type="edit"  idElement="1" onclick={()=>{}} />
+                            <ButtonTableActions label="Editar" color="cyan" page="atm" type="edit"  idElement="1" onclick={()=>edit(item.id)} />
                             <ButtonTableActions label="Excluir" color="red" page="atm" type="edit"  idElement="1" onclick={()=>{}} />
                         </th>
                         </tr> 
