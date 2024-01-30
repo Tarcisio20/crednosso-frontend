@@ -42,10 +42,11 @@ export const OrderTypeEdit  = ({ token, idUser } : Props) => {
             const otEdited = await OrderTypeEdited(token as string, idUser as string, params.id.toString(), { name_full : nameOrderType, status : statusOrderType === '1' ? true : false })
             console.log(otEdited)
             if(!otEdited.success){
+                router.back()
+            }else{
                 setMsgError('Erro ao Salvar, tentar novamente mais tarde')
-                return
             }
-            router.back()             
+                         
         }else{
             setMsgError('Favor, Preencher todos os campos!')
         }

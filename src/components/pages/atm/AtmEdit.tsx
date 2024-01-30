@@ -53,19 +53,22 @@ export const AtmEdit = ({ token, idUser } : Props) => {
 
     const editAtmFucntion = async () => {
         if(idSystemAtm !== '' && nameAtm !== '' && shortenedAtm !== '' && idTreasury !== '' && configA !== '' && configB !== '' && configC !== '' && configD !== '' && statusAtm !== ''){
-            const editedAtm = await editAtm(token as string, idUser as string, params.id.toString(), {
-                id_system : idSystemAtm,
+            
+            const data = {
+                id_system : idSystemAtm.toString(),
                 name_full : nameAtm,
                 shortened_name : shortenedAtm,
-                id_treasury :  idTreasury,
-                config_cass_A : configA,
-                config_cass_B : configB,
-                config_cass_C : configC,
-                config_cass_D : configD,
-                status : statusAtm === '0' ? false : true
-            })
+                id_treasury :  idTreasury.toString(),
+                config_cass_A : configA.toString(),
+                config_cass_B : configB.toString(),
+                config_cass_C : configC.toString(),
+                config_cass_D : configD.toString(),
+                status : statusAtm.toString()
+            }
+            const editedAtm = await editAtm(token as string, idUser as string, params.id.toString(), data)
+            console.log(editedAtm)
             if(editedAtm.error) setMsgError(editedAtm.error)
-            if(editedAtm.atm){
+            if(editedAtm.success){
                 router.back()
             }else{
                 setMsgError(editedAtm.error)

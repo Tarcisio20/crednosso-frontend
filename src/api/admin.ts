@@ -509,8 +509,7 @@ type EditAtmProps = {
   config_cass_B : string;
   config_cass_C : string;
   config_cass_D : string;
- 
-  status : boolean;
+  status : string;
 }
 export const editAtm = async (token: string, idUser: string, idEdit : string, data : EditAtmProps) => {
   try {
