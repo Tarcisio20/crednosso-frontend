@@ -28,7 +28,7 @@ export const TreasuryHome =  ({ token, idUser } : Props) => {
     const getAllTreasuriesFunction =  async () => {
         setLoading(true)
         const allt = await getAllTreasuries(token as string, idUser as string)
-        setTreasuries(allt.atms)
+        setTreasuries(allt.treasuries)
         setLoading(false)
     }
 

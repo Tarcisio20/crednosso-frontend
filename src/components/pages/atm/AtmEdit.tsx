@@ -66,12 +66,11 @@ export const AtmEdit = ({ token, idUser } : Props) => {
                 status : statusAtm.toString()
             }
             const editedAtm = await editAtm(token as string, idUser as string, params.id.toString(), data)
-            console.log(editedAtm)
             if(editedAtm.error) setMsgError(editedAtm.error)
             if(editedAtm.success){
                 router.back()
             }else{
-                setMsgError(editedAtm.error)
+                setMsgError('Erro ao salvar, tente em alguns minutos!')
             }
         }else{
             setMsgError('Favor, Preencher todos os campos!')

@@ -86,21 +86,21 @@ export const TreasuryAdd = ({ token, idUser }: Props) => {
       shortNameTreasury !== ""
     ) {
       let data = {
-        id_system: idSystemTreasury,
+        id_system: idSystemTreasury.toString(),
         name_full: nameTreasury,
         shortened_name: shortNameTreasury,
-        number_count: countTreasury,
+        number_count: countTreasury.toString(),
         balance_cass_10: cassATreasury.toString(),
         balance_cass_20: cassBTreasury.toString(),
         balance_cass_50: cassCTreasury.toString(),
         balance_cass_100: cassDTreasury.toString(),
       };
       const addT = await addTreasury(token as string, idUser as string, data);
-      if(!addT.success){
-        setMsgError('Erro ao salvar Tesouraria, favor tentar mais tarde!')
-        return
-      }else{
+      if(addT.error) setMsgError(addT.error)
+      if(addT.success){
         router.back()
+      }else{
+        setMsgError('Erro ao salvar Tesouraria, favor tentar mais tarde!')
       }
     } else {
       setMsgError("Favor, Preecher todos os campos!");
