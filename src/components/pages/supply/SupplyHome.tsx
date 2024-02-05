@@ -35,12 +35,12 @@ export const  SupplyHome =  ({ token, idUser } : Props) => {
                 <table width="100%" className="text-center table-auto border-collapse border rounded">
                     <thead>
                         <tr className="bg-slate-500 text-lg text-center border-b-2 border-y-slate-400 rounded" >
-                            <th>Id</th>
-                            <th>Id Atm</th>
-                            <th>Data</th>
-                            <th>Valor Total</th>
-                            <th>Status</th>
-                            <th>Ações</th>
+                            <th>ID</th>
+                            <th>ID ATM</th>
+                            <th>DATA</th>
+                            <th>VALOR TOTAL</th>
+                            <th>STATUS</th>
+                            <th>AÇÕES</th>
                         </tr>
                     </thead>
                     <tbody>

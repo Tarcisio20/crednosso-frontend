@@ -61,13 +61,27 @@ export const TreasuryEdit = ({ token, idUser }: Props) => {
     setIdSystemTreasury(t.treasury[0].id_system)
     setNameTreasury(t.treasury[0].name_full)
     setShortNameTreasury(t.treasury[0].shortened_name)
-    setCountTreasury(t.treasury[0].number_count || 0)
+    setCountTreasury(t.treasury[0].number_count)
     setCassATreasury(t.treasury[0].balance_cass_10)
     setCassBTreasury(t.treasury[0].balance_cass_20)
     setCassCTreasury(t.treasury[0].balance_cass_50)
     setCassDTreasury(t.treasury[0].balance_cass_100)
     setStatusTreasury(t.treasury[0].status === true ? '1' : '0')
+    setCassAShowTreasury(
+      GenereateIndividualValuesCassetesInReal(10, t.treasury[0].balance_cass_10)
+    )
+    setCassBShowTreasury(
+      GenereateIndividualValuesCassetesInReal(20, t.treasury[0].balance_cass_20)
+    )
+    setCassCShowTreasury(
+      GenereateIndividualValuesCassetesInReal(50, t.treasury[0].balance_cass_50)
+    )
+    setCassDShowTreasury(
+      GenereateIndividualValuesCassetesInReal(100, t.treasury[0].balance_cass_100)
+    )
+    setTotalCassShow( GenereateTotalValuesCassetesInReal(t.treasury[0].balance_cass_10, t.treasury[0].balance_cass_20, t.treasury[0].balance_cass_50, t.treasury[0].balance_cass_100) )
     setLoading(false)
+   
   }
 
   const alterValue = (type: number, value: number) => {
@@ -106,20 +120,21 @@ export const TreasuryEdit = ({ token, idUser }: Props) => {
     if (
       idSystemTreasury !== "" &&
       nameTreasury !== "" &&
-      shortNameTreasury !== ""
+      shortNameTreasury !== "" && countTreasury !== ''
     ) {
       let data = {
         id_system: idSystemTreasury.toString(),
         name_full: nameTreasury,
         shortened_name: shortNameTreasury,
-       // number_count: countTreasury,
+        number_count: countTreasury.toString(),
         balance_cass_10: cassATreasury.toString(),
         balance_cass_20: cassBTreasury.toString(),
         balance_cass_50: cassCTreasury.toString(),
         balance_cass_100: cassDTreasury.toString(),
+        status : statusTreasury === '0' ? false : true
       };
+      console.log(data)
       const editT = await editTreasury(token as string, idUser as string, params.id.toString(), data);
-      console.log(editT)
       if(editT.error){
         setMsgError(editT.error)
       } 
@@ -133,15 +148,20 @@ export const TreasuryEdit = ({ token, idUser }: Props) => {
     setLoading(false);
   };
 
+  const alterStatus = (e : string) => {
+    console.log(e)
+    setStatusTreasury(e)
+  }
+
   return (
     <>
       <TitlePage title="Editar Tesouraria" />
       <div className="flex flex-col gap-2 items-center justify-center w-full">
         <label className="text-center uppercase font-bold">
-          Informações Gerais
+          INFORMAÇÕES GERAIS
         </label>
         <div className="flex flex-col gap-3 w-1/3 text-center">
-          <label className="uppercase">ID Sistema</label>
+          <label className="uppercase">ID SISTEMA</label>
           <input
             className="h-6 rounded outline-none text-gray-900 text-center"
             type="text"
@@ -151,7 +171,7 @@ export const TreasuryEdit = ({ token, idUser }: Props) => {
           />
         </div>
         <div className="flex flex-col gap-2 w-1/3 text-center">
-          <label className="uppercase">Nome Completo</label>
+          <label className="uppercase">NOME COMPLETO</label>
           <input
             className="h-6 rounded outline-none text-gray-900 text-center"
             type="text"
@@ -161,7 +181,7 @@ export const TreasuryEdit = ({ token, idUser }: Props) => {
           />
         </div>
         <div className="flex flex-col gap-2 w-1/3 text-center">
-          <label className="uppercase">Nome Reduzido</label>
+          <label className="uppercase">NOME REDUZIDO</label>
           <input
             className="h-6 rounded outline-none text-gray-900 text-center"
             type="text"
@@ -172,7 +192,7 @@ export const TreasuryEdit = ({ token, idUser }: Props) => {
         </div>
 
         <div className="flex flex-col gap-2 w-1/3 text-center">
-          <label className="uppercase">Conta Tesouraria</label>
+          <label className="uppercase">CONTA TESOURARIA</label>
           <input
             className="h-6 rounded outline-none text-gray-900 text-center"
             type="text"
@@ -183,16 +203,16 @@ export const TreasuryEdit = ({ token, idUser }: Props) => {
         </div>
 
         <div className="flex flex-col gap-2 w-1/3 text-center">
-          <label className="uppercase">Status</label>
-          <select  className="h-6 rounded outline-none text-gray-900 text-center" disabled={loading} value={statusTreasury} onChange={e=>setStatusTreasury(e.target.value)} >
-            <option value="0">Inativo</option>
-            <option value="1">Ativo</option>
+          <label className="uppercase">STATUS</label>
+          <select  className="h-6 rounded outline-none text-gray-900 text-center" disabled={loading} value={statusTreasury} onChange={e=>alterStatus(e.target.value)} >
+            <option value="1">ATIVO</option>
+            <option value="0">INATIVO</option>
           </select>
         </div>
 
         <div className="flex flex-col gap-2 w-1/3 text-center mt-3">
           <label className="text-center uppercase font-bold mb-2">
-            Valores dos Cassetes
+            VALORES DOS CASSETES
           </label>
           <div className="flex items-center gap-2 justify-center">
             <div className="flex flex-col items-center justify-center  gap-3 w-24">

@@ -28,9 +28,7 @@ export const OrderAdd = ({ token, idUser }: Props) => {
   const router = useRouter();
 
   const [orderTypes, setOrderTypes] = useState<OrderTypeType[] | []>([]);
-  const [operationTypes, setOperationTypes] = useState<
-    OperationTypeType[] | []
-  >([]);
+  const [operationTypes, setOperationTypes] = useState<OperationTypeType[] | []>([]);
   const [treasuries, setTreasuries] = useState<TreasuryType[] | []>([]);
 
   const [idOperationType, setIdOperationType] = useState("");
@@ -73,7 +71,7 @@ export const OrderAdd = ({ token, idUser }: Props) => {
     );
     setOperationTypes(operationT.operationType);
     const t = await getAllTreasuries(token as string, idUser as string);
-    setTreasuries(t.atms);
+    setTreasuries(t.treasuries);
     setLoading(false);
   };
 
@@ -108,22 +106,26 @@ export const OrderAdd = ({ token, idUser }: Props) => {
       idTreasuryDestiny !== "" &&
       idOrderType !== ""
     ) {
-       
-      const or = await AddOrder(token as string, idUser as string, {
+
+      const data = {
         
         order_date:  TransformData(dateOrder),
         batch: "0",
-        id_origin_treasury: idTreasuryOrigin,
-        id_destiny_treasury: idTreasuryDestiny,
-        id_operation_type: idOperationType,
-        id_order_type: idOrderType,
+        id_origin_treasury: idTreasuryOrigin.toString(),
+        id_destiny_treasury: idTreasuryDestiny.toString(),
+        id_operation_type: idOperationType.toString(),
+        id_order_type: idOrderType.toString(),
         batch_treasury: "0",
-        value_of_10: cassA.toString(),
-        value_of_20: cassB.toString(),
-        value_of_50: cassC.toString(),
-        value_of_100: cassD.toString(),
-        observation: obs,
-      });
+        value_requested_10: cassA.toString(),
+        value_requested_20: cassB.toString(),
+        value_requested_50: cassC.toString(),
+        value_requested_100: cassD.toString(),
+        observation: obs.toString(),
+        id_confirmation : '1'
+      }
+       
+
+      const or = await AddOrder(token as string, idUser as string, data);
       if (or.error) setMsgError(or.error);
       if (or.success) {
         router.back();
@@ -138,11 +140,11 @@ export const OrderAdd = ({ token, idUser }: Props) => {
     <>
       <TitlePage title="Adicionar Pedido" />
       <ButtonForRedirects label="Visualizar Pedidos" url="/admin/order/view" />
-      <div className="flex gap-5 w-4/5 p-5">
-        <div className="flex flex-col gap-3 bg-red-600 w-full p-5">
+      <div className="flex gap-5 w-4/5 p-">
+        <div className="flex flex-col gap-3 bg-slate-500 w-full p-5 rounded-md">
           <div className="flex flex-col gap-2">
             <label className="font-bold">Tipo de Operação</label>
-            <div className="text-gray-900">
+            <div className="text-gray-900 flex items-center">
               <input
                 className="w-16 h-6 p-1 text-center outline-none border-2 border-gray-600 mr-2 rounded"
                 type="text"
@@ -151,7 +153,7 @@ export const OrderAdd = ({ token, idUser }: Props) => {
                 disabled={loading}
               />
               <select
-                className="text-gray-900 outline-none border-2 border-gray-600 rounded min-w-52"
+                className="text-gray-900 outline-none border-2 border-gray-600 rounded min-w-52 flex-1 text-center"
                 value={idOperationType}
                 onChange={(e) => setIdOperationType(e.target.value)}
                 disabled={loading}
@@ -169,7 +171,7 @@ export const OrderAdd = ({ token, idUser }: Props) => {
 
           <div className="flex flex-col gap-2">
             <label className="font-bold">Origem</label>
-            <div className="text-gray-900">
+            <div className="text-gray-900 flex items-center">
               <input
                 className="w-16 h-6 p-1 text-center outline-none border-2 border-gray-600 mr-2 rounded"
                 type="text"
@@ -178,7 +180,7 @@ export const OrderAdd = ({ token, idUser }: Props) => {
                 disabled={loading}
               />
               <select
-                className="text-gray-900 outline-none border-2 border-gray-600 rounded min-w-52"
+                className="text-gray-900 outline-none border-2 border-gray-600 rounded min-w-52 flex-1 text-center"
                 value={idTreasuryOrigin}
                 onChange={(e) => setIdTreasuryOrigin(e.target.value)}
                 disabled={loading}
@@ -196,16 +198,16 @@ export const OrderAdd = ({ token, idUser }: Props) => {
 
           <div className="flex flex-col gap-2">
             <label className="font-bold">Destino</label>
-            <div className="text-gray-900">
+            <div className="text-gray-900 flex items-center">
               <input
-                className="w-16 h-6 p-1 text-center outline-none border-2 border-gray-600 mr-2 rounded"
+                className="w-16 h-6 p-1 text-center outline-none border-2 border-gray-600 mr-2 rounded "
                 type="text"
                 value={idTreasuryDestiny}
                 onChange={(e) => setIdTreasuryDestiny(e.target.value)}
                 disabled={loading}
               />
               <select
-                className="text-gray-900 outline-none border-2 border-gray-600 rounded min-w-52"
+                className="text-gray-900 outline-none border-2 border-gray-600 rounded min-w-52 flex-1 text-center"
                 value={idTreasuryDestiny}
                 onChange={(e) => setIdTreasuryDestiny(e.target.value)}
                 disabled={loading}
@@ -223,9 +225,9 @@ export const OrderAdd = ({ token, idUser }: Props) => {
 
           <div className="flex flex-col gap-2">
             <label className="font-bold">Data Inicio</label>
-            <div className="text-gray-900">
+            <div className="text-gray-900 flex items-center">
               <input
-                className="w-40 h-6 p-1 text-center outline-none border-2 border-gray-600 mr-2 rounded"
+                className="w-40 h-6 p-1 text-center outline-none border-2 border-gray-600 mr-2 rounded flex-1"
                 type="date"
                 value={dateOrder}
                 onChange={(e) => setDateOrder(e.target.value)}
@@ -236,7 +238,7 @@ export const OrderAdd = ({ token, idUser }: Props) => {
 
           <div className="flex flex-col gap-2">
             <label className="font-bold">Tipo de Pedido</label>
-            <div className="text-gray-900">
+            <div className="text-gray-900 flex items-center">
               <input
                 className="w-16 h-6 p-1 text-center outline-none border-2 border-gray-600 mr-2 rounded"
                 type="text"
@@ -245,7 +247,7 @@ export const OrderAdd = ({ token, idUser }: Props) => {
                 disabled={loading}
               />
               <select
-                className="text-gray-900 outline-none border-2 border-gray-600 rounded min-w-52"
+                className="text-gray-900 outline-none border-2 border-gray-600 rounded min-w-52 flex-1 text-center"
                 value={idOrderType}
                 onChange={(e) => setIdOrderType(e.target.value)}
                 disabled={loading}
@@ -262,12 +264,12 @@ export const OrderAdd = ({ token, idUser }: Props) => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 bg-yellow-600 w-full p-5">
+        <div className="flex flex-col gap-2 bg-slate-500 w-full p-5 rounded-md">
           <label className="flex justify-center text-center font-bold uppercase text-gray-900 text-xl">
             Composição
           </label>
-          <div className="flex w-full justify-between px-3 h-full gap-1">
-            <div className=" w-32 flex flex-col gap-4 text-center">
+          <div className="flex w-full justify-between px-3 gap-1">
+            <div className=" w-40 flex flex-col gap-4 text-center">
               <label className="uppercase text-gray-900 font-bold">
                 CEDULA
               </label>
@@ -329,7 +331,7 @@ export const OrderAdd = ({ token, idUser }: Props) => {
               </div>
             </div>
           </div>
-          <div className="flex gap-3 justify-end px-3">
+          <div className="flex w-full justify-between px-3 gap-1">
             <label className="uppercase text-gray-900 font-bold flex items-center">
               TOTAL
             </label>
@@ -337,13 +339,9 @@ export const OrderAdd = ({ token, idUser }: Props) => {
               {valueTotal}
             </div>
           </div>
-          <div className=" flex justify-center items-center h-6 rounded w-full">
-            <input
-              className="h-8 outline-none rounded  w-full text-black px-1"
-              value={obs}
-              onChange={(e) => setObs(e.target.value)}
-              disabled={loading}
-            />
+          <div className="flex flex-col items-center w-full justify-between px-3 gap-1">
+            <label className="uppercase text-gray-900 font-bold flex items-center" >Observação</label>
+            <textarea className="h-8 outline-none rounded  w-full text-black px-1" value={obs} onChange={(e) => setObs(e.target.value)}  disabled={loading} ></textarea>
           </div>
         </div>
       </div>

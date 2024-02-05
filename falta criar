@@ -1,0 +1,16 @@
+ORDER (Criar no banco de dados)
+-  campo do Lote da Order
+  - mes:ano 2 ultimos digitos:numero sequencial começando do 1
+-  Tipo de Status de Orders
+   - Pendente
+   - Confirmado Total
+   - COnfirmado Parcial
+   - Concluido
+   - Cancelado
+   - Rejeitado
+
+
+TABLE BATCH(LOTE)
+   - id
+   - id_order
+   - num lote (mes:ano:dia)

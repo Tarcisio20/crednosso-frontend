@@ -63,15 +63,14 @@ export const AtmEdit = ({ token, idUser } : Props) => {
                 config_cass_B : configB.toString(),
                 config_cass_C : configC.toString(),
                 config_cass_D : configD.toString(),
-                status : statusAtm.toString()
+                status : statusAtm === '0' ? false : true
             }
             const editedAtm = await editAtm(token as string, idUser as string, params.id.toString(), data)
-            if(editedAtm.error) setMsgError(editedAtm.error)
             if(editedAtm.success){
                 router.back()
-            }else{
-                setMsgError('Erro ao salvar, tente em alguns minutos!')
+                return
             }
+            if(editedAtm.error) setMsgError(editedAtm.error)
         }else{
             setMsgError('Favor, Preencher todos os campos!')
         }
@@ -83,19 +82,19 @@ export const AtmEdit = ({ token, idUser } : Props) => {
             <div className="flex flex-col gap-2 items-center justify-center w-full">
                 <label className="text-center uppercase font-bold">Informações Gerais</label>
                 <div className="flex flex-col gap-3 w-1/3 text-center">
-                    <label className="uppercase">ID Sistema</label>
+                    <label className="uppercase">ID SISTEMA</label>
                     <input className="h-6 rounded outline-none text-gray-900 text-center" value={idSystemAtm} onChange={e=>setIdSystemAtm(e.target.value)} disabled={loading} />
                 </div>
                 <div className="flex flex-col gap-2 w-1/3 text-center">
-                    <label className="uppercase">Nome Completo</label>
+                    <label className="uppercase">NOME COMPLETO</label>
                     <input className="h-6 rounded outline-none text-gray-900 text-center" value={nameAtm} onChange={e=>setNameAtm(e.target.value)} disabled={loading} />
                 </div>
                 <div className="flex flex-col gap-2 w-1/3 text-center">
-                    <label className="uppercase">Nome Reduzido</label>
+                    <label className="uppercase">NOME REDUZIDO</label>
                     <input className="h-6 rounded outline-none text-gray-900 text-center" value={shortenedAtm} onChange={e=>setShortenedAtm(e.target.value)} disabled={loading} />
                 </div>
                 <div className="flex flex-col gap-2 w-1/3 text-center">
-                    <label className="uppercase">Transportadora</label>
+                    <label className="uppercase">TRANSPORTADORA</label>
                     <div className="flex gap-3">
                         <input className="w-20 h-6 rounded outline-none text-gray-900 text-center" value={idTreasury} onChange={e=>setIdTreasury(e.target.value)} disabled={loading} />
                         <select className="w-full h-6 outline-none rounded text-gray-900 text-center" value={idTreasury} onChange={e=>setIdTreasury(e.target.value)} disabled={loading}>
@@ -107,7 +106,7 @@ export const AtmEdit = ({ token, idUser } : Props) => {
                 </div>
 
                 <div className="flex flex-col gap-2 w-1/3 text-center mt-3">
-                    <label className="text-center uppercase font-bold">Configuração dos Cassetes</label>
+                    <label className="text-center uppercase font-bold">CONFIGURAÇÕES DE CASSETE</label>
                     <div className="flex items-center gap-6 justify-center">
                         <div className="flex flex-col items-center justify-center  gap-3 w-1/3">
                             <label className="flex items-center">CASSETE A</label>
@@ -144,10 +143,10 @@ export const AtmEdit = ({ token, idUser } : Props) => {
                     </div>
                 </div>
                 <div className="flex flex-col gap-2 w-1/3 text-center">
-                    <label className="uppercase">Status</label>
+                    <label className="uppercase">STATUS</label>
                     <select  className="h-6 rounded outline-none text-gray-900 text-center" value={statusAtm} onChange={e=>setStatusAtm(e.target.value)} disabled={loading} >
-                            <option value="1">Ativo</option>
-                            <option value="0">Inativo</option>
+                            <option value="1">ATIVO</option>
+                            <option value="0">INATIVO</option>
                     </select>
                 </div>
                 <div className="flex items-center justify-center mt-3 w-2/3">

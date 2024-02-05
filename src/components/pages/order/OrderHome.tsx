@@ -1,8 +1,15 @@
 "use client"
 
+import { GenereateTotalValuesCassetesInReal } from "@/Utils/GenereateTotalValuesCassetesInReal"
+import { TransformDataShow } from "@/Utils/TransformDataShow"
+import { getOrders } from "@/api/admin"
 import { ButtonForRedirects } from "@/components/admin/ButtonForRedirects"
 import { ButtonTableActions } from "@/components/admin/ButtonTableActions"
+import { NothingToShow } from "@/components/admin/NothingToShow"
 import { TitlePage } from "@/components/admin/TitlePage"
+import { OrderType } from "@/types/OrderType"
+import { loadStaticPaths } from "next/dist/server/dev/static-paths-worker"
+import { useEffect, useState } from "react"
 
 type Props = {
     token : string | undefined;
@@ -10,47 +17,83 @@ type Props = {
 }
 
 export const OrderHome = ({ token, idUser } : Props) => {
+
+    const [loading, setLoading] = useState(false)
+    const [orders, setOrders] = useState<OrderType[] | []>([])
+    const [msgError, setMsgError] = useState('')
+
+    useEffect(()=>{
+        getOrderFunction()
+    }, [])
+
+    const getOrderFunction = async () => {
+        setLoading(true)
+        const o = await getOrders(token as string, idUser as string)
+        setOrders(o.orders)
+
+        setLoading(false)
+    }
+
     return(
         <>
             <TitlePage title="Pedidos" />
             <ButtonForRedirects label="Adicionar Pedido" url="/admin/order/add" />
             <div className="p-4 w-full">
+                {!loading && orders.length > 0 &&
                 <table width="100%" className="text-center table-auto border-collapse border rounded">
-                    <thead>
-                        <tr className="bg-slate-500 text-lg text-center border-b-2 border-y-slate-400 rounded" >
-                            <th>Id</th>
-                            <th>Lote</th>
-                            <th>Data</th>
-                            <th>Valor Total</th>
-                            <th>Status</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr className="py-2 ">
-                            <th>1</th>
-                            <th>12487</th>
-                            <th>15/02/2024</th>
-                            <th>R$ 500.000,00</th>
-                            <th>Aguardando Aprovação</th>
-                            <th className="flex justify-center  items-center gap-2">
-                                <ButtonTableActions label="Editar" type="edit" page="order" idElement="1" color="cyan" onclick={()=>{}} />
-                                <ButtonTableActions label="Rejeitar" type="del" page="order" idElement="1" color="red" onclick={()=>{}} />
-                            </th>
-                        </tr>
-                        <tr className="py-2 bg-slate-500">
-                            <th>2</th>
-                            <th>12482</th>
-                            <th>16/02/2024</th>
-                            <th>R$ 250.000,00</th>
-                            <th>Recusado</th>
-                            <th className="flex justify-center  items-center gap-2" >
-                                <ButtonTableActions label="Editar" type="edit" page="order" idElement="1" color="cyan" onclick={()=>{}} />
-                                <ButtonTableActions label="Rejeitar" type="del" page="order" idElement="1" color="red" onclick={()=>{}} />
-                            </th>
-                        </tr>
-                    </tbody>
-                </table>
+                <thead>
+                    <tr className="bg-slate-500 text-lg text-center border-b-2 border-y-slate-400 rounded" >
+                        <th>X</th>
+                        <th>Operação</th>
+                        <th>Cod. Origem</th>
+                        <th>Transp. Origem</th>
+                        <th>Cod. Destino</th>
+                        <th>Transp. Destino</th>
+                        <th>Data Pedido</th>
+                        <th>Valor Pedido</th>
+                        <th>Status</th>
+                        <th>Valor Realizado</th>
+                        <th>Alt. Comp.</th>
+                        <th>Observação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr className="py-2">
+                        <td>
+                            <input type="checkbox" id="1" />
+                        </td>
+                        <td>Retirada Loja</td>
+                        <td>1</td>
+                        <td>Origem</td>
+                        <td>2</td>
+                        <td>Destino</td>
+                        <td>14/01/2024</td>
+                        <td>R$ 100.000,00</td>
+                        <td>Pago</td>
+                        <td>R$ 80.000,00</td>
+                        <td>Sim</td>
+                        <td>Aqui vem uma observação</td>
+                    </tr>
+                    <tr className="py-2 bg-slate-500">
+                        <td>
+                            <input type="checkbox" id="1" />
+                        </td>
+                        <td>Retirada Loja</td>
+                        <td>1</td>
+                        <td>Origem</td>
+                        <td>2</td>
+                        <td>Destino</td>
+                        <td>14/01/2024</td>
+                        <td>R$ 100.000,00</td>
+                        <td>Pago</td>
+                        <td>R$ 80.000,00</td>
+                        <td>Sim</td>
+                        <td>Aqui vem uma observação</td>
+                    </tr>
+                </tbody>
+            </table>
+                }
+                {!loading && orders.length <= 0 && <NothingToShow label="Pedidos" />}
             </div>
         </>
     )

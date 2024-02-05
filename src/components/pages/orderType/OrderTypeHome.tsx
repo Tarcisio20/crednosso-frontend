@@ -46,10 +46,10 @@ export const OrderTypeHome =  ({ token, idUser } : Props) => {
                     <table width="100%" className="text-center table-auto border-collapse border rounded">
                         <thead>
                             <tr className="bg-slate-500 text-lg text-center border-b-2 border-y-slate-400 rounded" >
-                                <th>Id</th>
-                                <th>Nome Completo</th>
-                                <th>Status</th>
-                                <th>Ações</th>
+                                <th>ID</th>
+                                <th>NOME COMPLETO</th>
+                                <th>STAUTS</th>
+                                <th>AÇÕES</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -69,7 +69,7 @@ export const OrderTypeHome =  ({ token, idUser } : Props) => {
                 </div>
             </>
             )}
-            {loading && orderTypes.length === 0 &&   <NothingToShow label="tipo de pedido" />}
+            {!loading && orderTypes.length <= 0 &&   <NothingToShow label="tipo de pedido" />}
         </>
     )
 }

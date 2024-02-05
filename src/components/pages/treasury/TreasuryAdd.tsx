@@ -80,22 +80,21 @@ export const TreasuryAdd = ({ token, idUser }: Props) => {
 
   const addTreasuryFunction = async () => {
     setLoading(true);
-    if (
-      idSystemTreasury !== "" &&
-      nameTreasury !== "" &&
-      shortNameTreasury !== ""
-    ) {
-      let data = {
+    setMsgError('')
+    if ( idSystemTreasury !== "" && nameTreasury !== "" && shortNameTreasury !== "" && countTreasury !== '') {
+      const data = {
         id_system: idSystemTreasury.toString(),
-        name_full: nameTreasury,
-        shortened_name: shortNameTreasury,
+        name_full: nameTreasury.toString(),
         number_count: countTreasury.toString(),
+        shortened_name: shortNameTreasury.toString(),
         balance_cass_10: cassATreasury.toString(),
         balance_cass_20: cassBTreasury.toString(),
         balance_cass_50: cassCTreasury.toString(),
         balance_cass_100: cassDTreasury.toString(),
       };
+      console.log(data)
       const addT = await addTreasury(token as string, idUser as string, data);
+      console.log(addT)
       if(addT.error) setMsgError(addT.error)
       if(addT.success){
         router.back()

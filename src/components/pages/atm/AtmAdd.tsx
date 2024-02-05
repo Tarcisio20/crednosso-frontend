@@ -1,12 +1,12 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import { TreasuryType } from "@/types/TreasuryType";
+import { useRouter } from "next/navigation";
 import { AddAtm, getAllTreasuries } from "@/api/admin";
 import { ButtonComuns } from "@/components/admin/ButtonComuns"
 import { TitlePage } from "@/components/admin/TitlePage"
-import { useRouter } from "next/navigation";
 import { ErrorComponent } from "@/components/admin/ErrorComponent";
+import { TreasuryType } from "@/types/TreasuryType";
 
 type Props = {
     token : string | undefined;
@@ -39,7 +39,7 @@ export const AtmAdd = ({ token, idUser } : Props) => {
     const getTreasuriesFunction = async () => {
         setLoading(true)
         const tr = await getAllTreasuries(token as string, idUser as string)
-        setTreasuries(tr.atms)
+        setTreasuries(tr.treasuries)
         setLoading(false)
     }
 
@@ -65,6 +65,7 @@ export const AtmAdd = ({ token, idUser } : Props) => {
             if(at.error) setMsgError(at.error)
             if(at.success) {
                 router.back()
+                return
             }else{
                 setMsgError(at.error)
             }
@@ -80,23 +81,22 @@ export const AtmAdd = ({ token, idUser } : Props) => {
             <div className="flex flex-col gap-2 items-center justify-center w-full">
                 <label className="text-center uppercase font-bold">Informações Gerais</label>
                 <div className="flex flex-col gap-3 w-1/3 text-center">
-                    <label className="uppercase">ID Sistema</label>
+                    <label className="uppercase">ID SISTEMA</label>
                     <input className="h-6 rounded outline-none text-gray-900 text-center" value={idSystemAtm} onChange={e=>setIdSystemAtm(e.target.value)} disabled={loading} />
                 </div>
                 <div className="flex flex-col gap-2 w-1/3 text-center">
-                    <label className="uppercase">Nome Completo</label>
+                    <label className="uppercase">NOME COMPLETO</label>
                     <input className="h-6 rounded outline-none text-gray-900 text-center" value={nameAtm} onChange={e=>setNameAtm(e.target.value)} disabled={loading} />
                 </div>
                 <div className="flex flex-col gap-2 w-1/3 text-center">
-                    <label className="uppercase">Nome Reduzido</label>
+                    <label className="uppercase">NOME REDUZIDO</label>
                     <input className="h-6 rounded outline-none text-gray-900 text-center" value={shortedAtm} onChange={e=>setShortedAtm(e.target.value)} disabled={loading} />
                 </div>
                 <div className="flex flex-col gap-2 w-1/3 text-center">
-                    <label className="uppercase">Transportadora</label>
+                    <label className="uppercase">TRANSPORTADORA</label>
                     <div className="flex gap-3">
                         <input className="w-20 h-6 rounded outline-none text-gray-900 text-center" value={idTreasury} onChange={e=>setIdTreasury(e.target.value)} disabled={loading} />
                         <select className="w-full h-6 outline-none rounded text-gray-900 text-center" value={idTreasury} onChange={e=>setIdTreasury(e.target.value)} disabled={loading}  >
-                            <option value=""></option>
                             {treasuries.map((item, key) => (
                                 <option key={key} value={item.id_system}>{item.shortened_name}</option>
                             ))}
@@ -105,7 +105,7 @@ export const AtmAdd = ({ token, idUser } : Props) => {
                 </div>
 
                 <div className="flex flex-col gap-2 w-1/3 text-center mt-3">
-                    <label className="text-center uppercase font-bold">Configuração dos Cassetes</label>
+                    <label className="text-center uppercase font-bold">CONFIGIRAÇÃO DOS CASSETES</label>
                     <div className="flex items-center gap-6 justify-center">
                         <div className="flex flex-col items-center justify-center  gap-3 w-1/3">
                             <label className="flex items-center">CASSETE A</label>

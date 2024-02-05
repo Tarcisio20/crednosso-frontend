@@ -64,18 +64,18 @@ export const AtmHome = ({ token , idUser } : Props) => {
                 <table width="100%" className="text-center table-auto border-collapse border rounded">
                     <thead>
                         <tr className="bg-slate-500 text-lg text-center border-b-2 border-y-slate-400 rounded" >
-                            <th>Id</th>
-                            <th>Nome</th>
-                            <th>Reduzido</th>
-                            <th>Transportadora</th>
-                            <th>Status</th>
-                            <th>Ações</th>
+                            <th>ID SISTEMA</th>
+                            <th>NOME</th>
+                            <th>N. REDUZIDO</th>
+                            <th>TRANSPORTADORA</th>
+                            <th>STATUS</th>
+                            <th>AÇÕES</th>
                         </tr>
                     </thead>
                     <tbody>
                     {!loading && atms.map((item, key) => (
                        <tr key={key} className="py-2 ">
-                        <th>{item.id}</th>
+                        <th>{item.id_system}</th>
                         <th>{item.name_full}</th>
                         <th>{item.shortened_name}</th>
                         <th> {nameTreasuryById(item.id_treasury)}</th>

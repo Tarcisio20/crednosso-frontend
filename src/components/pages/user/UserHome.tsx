@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getAllUser } from "@/api/admin";
+import { getAllUser, removeUser } from "@/api/admin";
 import { UserType } from "@/types/UserType";
 import { TitlePage } from "@/components/admin/TitlePage";
 import { ButtonForRedirects } from "@/components/admin/ButtonForRedirects";
@@ -19,6 +19,7 @@ export const UserHome = ({ token, idUser }: Props) => {
 
   const [users, setUsers] = useState<UserType[] | []>([]);
   const [loading, setLoading] = useState(false);
+  const [msgError, setMsgError] = useState('')
 
   useEffect(() => {
     getAllUsersFunction();
@@ -35,6 +36,17 @@ export const UserHome = ({ token, idUser }: Props) => {
     router.push(`/admin/user/edit/${id}`);
   };
 
+  const removeUserFunction = async (id : string) => {
+    setMsgError('')
+    setLoading(true)
+    const removededUser = await removeUser(token as string, idUser as string, id)
+    if(removededUser.success){
+      router.push('user')
+    }
+  if(removededUser.error) setMsgError(removededUser.error)
+    setLoading(false)
+  }
+
   return (
     <>
       <TitlePage title="Usuários" />
@@ -48,12 +60,12 @@ export const UserHome = ({ token, idUser }: Props) => {
             >
               <thead>
                 <tr className="bg-slate-500 text-lg text-center border-b-2 border-y-slate-400 rounded">
-                  <th>Id</th>
-                  <th>Nome Completo</th>
-                  <th>E-mail</th>
-                  <th>Tipo</th>
-                  <th>Status</th>
-                  <th>Ações</th>
+                  <th>ID</th>
+                  <th>NOME COMPLETO</th>
+                  <th>E-MAIL</th>
+                  <th>TIPO</th>
+                  <th>STATUS</th>
+                  <th>AÇÕES</th>
                 </tr>
               </thead>
               <tbody>
@@ -87,9 +99,10 @@ export const UserHome = ({ token, idUser }: Props) => {
                           label="Bloquear"
                           page="user"
                           idElement={item.id}
+                          disabled={!item.status}
                           type="delete"
                           color="red"
-                          onclick={() => {}}
+                          onclick={()=>removeUserFunction(item.id)}
                         />
                       </th>
                     </tr>

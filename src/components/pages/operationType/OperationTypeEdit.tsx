@@ -58,9 +58,9 @@ export const OperationTypeEdit = ({ token, idUser } : Props) => {
         <>
             <TitlePage title="Editar Tipo de Operação" />
             <div className="flex flex-col gap-2 items-center justify-center w-full">
-                <label className="text-center uppercase font-bold">Informações Gerais</label>
+                <label className="text-center uppercase font-bold">INFORMAÇÕES GERAIS</label>
                 <div className="flex flex-col gap-2 w-1/3 text-center">
-                    <label className="uppercase">Nome</label>
+                    <label className="uppercase">NOME COMPLETO</label>
                     <input 
                         className="h-6 rounded outline-none text-gray-900 text-center" 
                         disabled={loading} 
@@ -70,10 +70,10 @@ export const OperationTypeEdit = ({ token, idUser } : Props) => {
                     />
                 </div>
                 <div className="flex flex-col gap-2 w-1/3 text-center">
-                    <label className="uppercase">Status</label>
+                    <label className="uppercase">STATUS</label>
                     <select className="h-6 rounded outline-none text-gray-900 text-center" disabled={loading} value={statusOperationType} onChange={e=>setStatusOperationType(e.target.value)} >
-                        <option value="1">Ativo</option>
-                        <option value="0">Inativo</option>
+                        <option value="1">ATIVO</option>
+                        <option value="0">INATIVO</option>
                     </select>
                 </div>
                 <div className="flex items-center justify-center mt-3 w-2/3">

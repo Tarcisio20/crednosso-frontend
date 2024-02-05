@@ -127,12 +127,28 @@ export const editUserById = async (
       headers: headersForReq,
     };
     const json = await req.put(`/admin/user/${idEdit}`, data, config);
-    console.log(json.data);
     return json.data;
   } catch (error) {
     return false;
   }
 };
+
+export const removeUser = async (token: string, idUser: string, idEdit: string,) => {
+  try {
+    const headersForReq = {
+      ...headersPadrao,
+      Authorization: `Token ${token}`,
+      id: idUser,
+    };
+    const config: AxiosRequestConfig = {
+      headers: headersForReq,
+    };
+    const json = await req.delete(`/admin/user/${idEdit}`, config);
+    return json.data;
+  } catch (error) {
+    return false;
+  }
+}
 
 export const getOrderTypes = async (token: string, idUser: string) => {
   try {
@@ -313,6 +329,7 @@ export const getAllTreasuries = async (token: string, idUser: string) => {
   }
 };
 
+
 type TreasuryAddProps = {
   id_system: string;
   name_full: string;
@@ -369,11 +386,12 @@ type TreasuryEditProps = {
   id_system: string;
   name_full: string;
   shortened_name: string;
-  // number_count?: string;
+  number_count: string;
   balance_cass_10: string;
   balance_cass_20: string;
   balance_cass_50: string;
   balance_cass_100: string;
+  status : boolean;
 };
 export const editTreasury = async (
   token: string,
@@ -390,7 +408,7 @@ export const editTreasury = async (
     const config: AxiosRequestConfig = {
       headers: headersForReq,
     };
-    console.log(data);
+
     const json = await req.put(`/admin/treasury/${idEdit}`, data, config);
     return json.data;
   } catch (error) {
@@ -406,10 +424,10 @@ type OrderProps = {
   id_operation_type: string;
   id_order_type: string;
   batch_treasury: string;
-  value_of_10: string;
-  value_of_20: string;
-  value_of_50: string;
-  value_of_100: string;
+  value_requested_10: string;
+  value_requested_20: string;
+  value_requested_50: string;
+  value_requested_100: string;
   observation: string;
 };
 export const AddOrder = async (
@@ -509,7 +527,7 @@ type EditAtmProps = {
   config_cass_B : string;
   config_cass_C : string;
   config_cass_D : string;
-  status : string;
+  status : boolean;
 }
 export const editAtm = async (token: string, idUser: string, idEdit : string, data : EditAtmProps) => {
   try {
@@ -522,6 +540,23 @@ export const editAtm = async (token: string, idUser: string, idEdit : string, da
       headers: headersForReq,
     };
     const json = await req.put(`/admin/atm/${idEdit}`, data,  config);
+    return json.data;
+  } catch (error) {
+    return false;
+  }
+}
+
+export const getOrders = async (token: string, idUser: string) => {
+  try {
+    const headersForReq = {
+      ...headersPadrao,
+      Authorization: `Token ${token}`,
+      id: idUser,
+    };
+    const config: AxiosRequestConfig = {
+      headers: headersForReq,
+    };
+    const json = await req.get(`/admin/order`,  config);
     return json.data;
   } catch (error) {
     return false;

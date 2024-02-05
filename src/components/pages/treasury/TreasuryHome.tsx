@@ -28,6 +28,7 @@ export const TreasuryHome =  ({ token, idUser } : Props) => {
     const getAllTreasuriesFunction =  async () => {
         setLoading(true)
         const allt = await getAllTreasuries(token as string, idUser as string)
+        console.log(allt)
         setTreasuries(allt.treasuries)
         setLoading(false)
     }
@@ -46,12 +47,12 @@ export const TreasuryHome =  ({ token, idUser } : Props) => {
                 <table width="100%" className="text-center table-auto border-collapse border rounded">
                     <thead>
                         <tr className="bg-slate-500 text-lg text-center border-b-2 border-y-slate-400 rounded" >
-                            <th>Id</th>
-                            <th>Nome Completo</th>
-                            <th>Nome Reduzido</th>
-                            <th>Saldo </th>
-                            <th>Status</th>
-                            <th>Ações</th>
+                            <th>ID SISTEMA</th>
+                            <th>NOME COMPLETO</th>
+                            <th>NOME REDUZIDO</th>
+                            <th>SALDO</th>
+                            <th>STATUS</th>
+                            <th>AÇÕES</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -64,7 +65,7 @@ export const TreasuryHome =  ({ token, idUser } : Props) => {
                             <th>{item.status === true ? 'Ativo' : 'Inativo'}</th>
                             <th className="flex justify-center  items-center gap-2">
                                 <ButtonTableActions label="Editar" page="treasury" idElement={"1"} type="edit" color="cyan" onclick={()=>edit(item.id.toString())} />
-                                <ButtonTableActions label="Rejeitar" page="treasury" color="red" type="del" idElement={"1"} onclick={()=>{}} />
+                                <ButtonTableActions label="Excluir" page="treasury" color="red" type="del" idElement={"1"} onclick={()=>{}} />
                             </th>
                         </tr>
                         ))}
