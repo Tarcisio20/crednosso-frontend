@@ -1,4 +1,4 @@
-export const TransformDataShow = (element : Date) => {
+export const TransformDataShow = (element : string) => {
     const dt = new Date(element)
     let day = dt.getDay()
     let mounth = dt.getMonth()

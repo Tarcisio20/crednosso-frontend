@@ -18,6 +18,7 @@ export const MenuAdmin = () => {
             <li className="py-1" ><a href="/admin/treasury" className="hover:text-gray-300">Tesourarias</a></li>
             <li className="py-1" ><a href="/admin/operationType" className="hover:text-gray-300">Tipos Operações</a></li>
             <li className="py-1" ><a href="/admin/orderType" className="hover:text-gray-300">Tipos Pedidos</a></li>
+            <li className="py-1" ><a href="/admin/confirmationType" className="hover:text-gray-300">Tipos Confirmação</a></li>
             <li className="py-1" ><a href="/admin/user" className="hover:text-gray-300">Usuarios</a></li>
             <li className="py-1"><ButtonLogout /></li>
           </ul>
