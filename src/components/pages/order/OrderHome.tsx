@@ -39,6 +39,7 @@ export const OrderHome = ({ token, idUser } : Props) => {
         setMsgError('')
         setLoading(true)
         const o = await getOrders(token as string, idUser as string)
+        console.log(o.orders)
         setOrders(o.orders)
         const t = await getAllTreasuries(token as string, idUser as string)
         setTreasuries(t.treasuries)

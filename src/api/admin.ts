@@ -416,43 +416,6 @@ export const editTreasury = async (
   }
 };
 
-type OrderProps = {
-  order_date: string;
-  batch: string;
-  id_origin_treasury: string;
-  id_destiny_treasury: string;
-  id_operation_type: string;
-  id_order_type: string;
-  batch_treasury: string;
-  value_requested_10: string;
-  value_requested_20: string;
-  value_requested_50: string;
-  value_requested_100: string;
-  observation: string;
-};
-export const AddOrder = async (
-  token: string,
-  idUser: string,
-  data: OrderProps
-) => {
-  console.log(data);
-  try {
-    const headersForReq = {
-      ...headersPadrao,
-      Authorization: `Token ${token}`,
-      id: idUser,
-    };
-    const config: AxiosRequestConfig = {
-      headers: headersForReq,
-    };
-    console.log(data);
-    const json = await req.post(`/admin/order`, data, config);
-    return json.data;
-  } catch (error) {
-    return false;
-  }
-};
-
 export const getAllAtms = async (token: string, idUser: string) => {
   try {
     const headersForReq = {
@@ -546,6 +509,43 @@ export const editAtm = async (token: string, idUser: string, idEdit : string, da
   }
 }
 
+type OrderProps = {
+  order_date: string;
+  batch: string;
+  id_origin_treasury: string;
+  id_destiny_treasury: string;
+  id_operation_type: string;
+  id_order_type: string;
+  batch_treasury: string;
+  value_requested_10: string;
+  value_requested_20: string;
+  value_requested_50: string;
+  value_requested_100: string;
+  observation: string;
+};
+export const AddOrder = async (
+  token: string,
+  idUser: string,
+  data: OrderProps
+) => {
+  console.log(data);
+  try {
+    const headersForReq = {
+      ...headersPadrao,
+      Authorization: `Token ${token}`,
+      id: idUser,
+    };
+    const config: AxiosRequestConfig = {
+      headers: headersForReq,
+    };
+    console.log(data);
+    const json = await req.post(`/admin/order`, data, config);
+    return json.data;
+  } catch (error) {
+    return false;
+  }
+};
+
 export const getOrders = async (token: string, idUser: string) => {
   try {
     const headersForReq = {
@@ -574,6 +574,31 @@ export const getOrderById = async (token : string, idUser : string, id : string)
       headers: headersForReq,
     };
     const json = await req.get(`/admin/order/${id}`,  config);
+    return json.data;
+  } catch (error) {
+    return false;
+  }
+}
+
+type EditOrderProps = {
+  value_confirmed_10 : string;
+  value_confirmed_20 : string;
+  value_confirmed_50 : string;
+  value_confirmed_100 : string;
+  id_status_confirmation_order : string;
+  confirmed : boolean;
+}
+export const editOrderForConfirmationPartial = async (token : string, idUser : string, id : string, data : EditOrderProps) => {
+  try {
+    const headersForReq = {
+      ...headersPadrao,
+      Authorization: `Token ${token}`,
+      id: idUser,
+    };
+    const config: AxiosRequestConfig = {
+      headers: headersForReq,
+    };
+    const json = await req.put(`/admin/order/${id}`, data, config);
     return json.data;
   } catch (error) {
     return false;

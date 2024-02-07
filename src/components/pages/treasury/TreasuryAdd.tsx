@@ -92,9 +92,7 @@ export const TreasuryAdd = ({ token, idUser }: Props) => {
         balance_cass_50: cassCTreasury.toString(),
         balance_cass_100: cassDTreasury.toString(),
       };
-      console.log(data)
       const addT = await addTreasury(token as string, idUser as string, data);
-      console.log(addT)
       if(addT.error) setMsgError(addT.error)
       if(addT.success){
         router.back()

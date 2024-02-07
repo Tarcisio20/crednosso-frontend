@@ -1,11 +1,12 @@
 import { GenereateTotalValuesCassetesInReal } from "@/Utils/GenereateTotalValuesCassetesInReal";
-import { getOrderById, getTreasuryById } from "@/api/admin";
+import { editOrderForConfirmationPartial, getOrderById, getTreasuryById } from "@/api/admin";
 import { OrderType } from "@/types/OrderType";
 import { TreasuryType } from "@/types/TreasuryType";
 import { useEffect, useState } from "react";
 import { Divider } from "./Divider";
 import { GenereateIndividualValuesCassetesInReal } from "@/Utils/GenereateIndividualValuesCassetesInReal";
 import { ButtonComuns } from "./ButtonComuns";
+import { ErrorComponent } from "./ErrorComponent";
 
 type Props = {
     isOpen : boolean;
@@ -21,6 +22,7 @@ export const ModalConfirmationPartial = ({isOpen, token, idUser, idElement, onCl
     const [order, setOrder] = useState<OrderType | []>([])
     const [treasury, setTreasury] = useState<TreasuryType | []>([])
     const [loading, setLoading] = useState(false)
+    const [msgError, setMsgError] = useState('')
 
     const [cassA, setCassA] = useState(0)
     const [cassB, setCassB] = useState(0)
@@ -87,6 +89,30 @@ export const ModalConfirmationPartial = ({isOpen, token, idUser, idElement, onCl
             );
         }
       };
+
+    const alterValues = async () => {
+        setMsgError('')
+        setLoading(true)
+        const oldValue = (order.value_requested_10 * 10) + (order.value_requested_20 * 20) + (order.value_requested_50 * 50) + (order.value_requested_100 * 100)
+        const newValue = (cassA * 10) + (cassB * 20) + (cassC * 50) + (cassD * 100)
+        console.log("Cheguei na função")
+        if(newValue <= oldValue){
+            const data = {
+                value_confirmed_10 : cassA.toString(),
+                value_confirmed_20 : cassB.toString(),
+                value_confirmed_50 : cassC.toString(),
+                value_confirmed_100 : cassD.toString(),
+                id_status_confirmation_order : '3',
+                confirmed : true,
+            }
+            console.log("Cheguei na função e no if")
+            console.log(data)
+            const o = await editOrderForConfirmationPartial(token as string, idUser as string, idElement, data)
+        }else{
+            setMsgError('O novo valor tem que ser menor ou igual ao pedido antigo')
+        }
+        setLoading(false)
+    }
     
     return(
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-black bg-opacity-50">
@@ -166,10 +192,11 @@ export const ModalConfirmationPartial = ({isOpen, token, idUser, idElement, onCl
                     <ButtonComuns
                         label={!loading ? "Editar Pedido" : "Aguarde ..."}
                         color="green"
-                        onClick={()=>{}}
+                        onClick={alterValues}
                         disabled={loading}
                     />
                 </div>
+                {!loading && msgError !== '' && <ErrorComponent label={msgError} />}
             </div>
             </div>
         </div>

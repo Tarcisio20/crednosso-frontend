@@ -70,6 +70,7 @@ export const OrderAdd = ({ token, idUser }: Props) => {
       idUser as string
     );
     setOperationTypes(operationT.operationType);
+    console.log(operationT)
     const t = await getAllTreasuries(token as string, idUser as string);
     setTreasuries(t.treasuries);
     setLoading(false);
