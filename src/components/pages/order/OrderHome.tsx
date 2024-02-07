@@ -76,8 +76,10 @@ export const OrderHome = ({ token, idUser } : Props) => {
     const openModalFunction = () => {
         if(inptusCheckeds.length > 0){
             setOpenModal(true)
+        }else if(inptusCheckeds.length > 1){
+            setMsgError('Favor, Selecionar apenas um Pedido para editar')
         }else{
-            setMsgError('Favor, Selecionar ao menos um elemento')
+            setMsgError('Favor, Selecionar um Pedido para editar')
         }
     }
 
@@ -160,8 +162,8 @@ export const OrderHome = ({ token, idUser } : Props) => {
                 }
                 {!loading && orders.length <= 0 && <NothingToShow label="Pedidos" />}
             </div>
-            {openModal && <ModalConfirmationPartial isOpen={openModal} onClose={closeModalFunction} />}
-            {!loading && msgError !== '' && <ErrorComponent  label={msgError} />}
+            {openModal && <ModalConfirmationPartial isOpen={openModal} token={token as string} idUser={idUser as string} idElement={inptusCheckeds[0]} onClose={closeModalFunction} />}
+            {!loading && msgError !== '' && <ErrorComponent  label={msgError}  />}
         </>
     )
 }
