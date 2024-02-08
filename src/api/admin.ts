@@ -604,3 +604,20 @@ export const editOrderForConfirmationPartial = async (token : string, idUser : s
     return false;
   }
 }
+
+export const editOrderForConfirmationTotal = async (token : string, idUser : string, id : string, data : EditOrderProps) => {
+  try {
+    const headersForReq = {
+      ...headersPadrao,
+      Authorization: `Token ${token}`,
+      id: idUser,
+    };
+    const config: AxiosRequestConfig = {
+      headers: headersForReq,
+    };
+    const json = await req.put(`/admin/order/${id}`, data, config);
+    return json.data;
+  } catch (error) {
+    return false;
+  }
+}

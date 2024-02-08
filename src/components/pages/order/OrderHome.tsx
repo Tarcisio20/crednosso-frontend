@@ -1,7 +1,7 @@
 "use client"
 
 import { ChangeEvent, useEffect, useState } from "react"
-import { getAllOperationType, getAllTreasuries, getOrders } from "@/api/admin"
+import { editOrderForConfirmationTotal, getAllOperationType, getAllTreasuries, getOrderById, getOrders } from "@/api/admin"
 import { OrderType } from "@/types/OrderType"
 import { GenereateTotalValuesCassetesInReal } from "@/Utils/GenereateTotalValuesCassetesInReal"
 import { ButtonForRedirects } from "@/components/admin/ButtonForRedirects"
@@ -39,7 +39,6 @@ export const OrderHome = ({ token, idUser } : Props) => {
         setMsgError('')
         setLoading(true)
         const o = await getOrders(token as string, idUser as string)
-        console.log(o.orders)
         setOrders(o.orders)
         const t = await getAllTreasuries(token as string, idUser as string)
         setTreasuries(t.treasuries)
@@ -88,8 +87,30 @@ export const OrderHome = ({ token, idUser } : Props) => {
         setOpenModal(false)
     }
 
-    const confirmationPartialFunction = (id : number) => {
-
+    const confirmationTotalFunction = async () => {
+        setMsgError('')
+        setLoading(true)
+        console.log("Cheguei na função")
+        if(inptusCheckeds.length > 0){
+            console.log('cheguei dentro do if')
+            for(let i = 0; i < inptusCheckeds.length; i++){
+                let o = await getOrderById(token as string, idUser as string, inptusCheckeds[i])
+                let data = {
+                    value_confirmed_10 : o.order[0].value_requested_10.toString(),
+                    value_confirmed_20 : o.order[0].value_requested_20.toString(),
+                    value_confirmed_50 : o.order[0].value_requested_50.toString(),
+                    value_confirmed_100 : o.order[0].value_requested_100.toString(),
+                    id_status_confirmation_order : '3'.toString(),
+                    confirmed : true,
+                }
+                console.log(data)
+                let or = await editOrderForConfirmationTotal(token as string, idUser as string, inptusCheckeds[i], data)
+            } 
+            location.reload()
+        }else{
+            setMsgError('Favor selecionar algum pedido para proseguir')
+        }
+        setLoading(false)
     }
 
     return(
@@ -108,7 +129,7 @@ export const OrderHome = ({ token, idUser } : Props) => {
                 </div>
                 <div className="flex justify-center items-center gap-3">
                     <ButtonOptions label="Confirmação Parical" color="yellow" onClick={openModalFunction}  />
-                    <ButtonOptions label="Confirmação Total" color="yellow" onClick={()=>{}} />
+                    <ButtonOptions label="Confirmação Total" color="yellow" onClick={confirmationTotalFunction} />
                     <ButtonOptions label="Gerar Lançamento" color="yellow" onClick={()=>{}} />
                     <ButtonOptions label="Gerar Pagamento" color="yellow" onClick={()=>{}} />
                     <ButtonOptions label="Gerar Relatório" color="yellow" onClick={()=>{}} />
