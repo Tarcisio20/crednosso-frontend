@@ -7,6 +7,7 @@ import { Divider } from "./Divider";
 import { GenereateIndividualValuesCassetesInReal } from "@/Utils/GenereateIndividualValuesCassetesInReal";
 import { ButtonComuns } from "./ButtonComuns";
 import { ErrorComponent } from "./ErrorComponent";
+import { useRouter } from "next/navigation";
 
 type Props = {
     isOpen : boolean;
@@ -18,6 +19,8 @@ type Props = {
 
 export const ModalConfirmationPartial = ({isOpen, token, idUser, idElement, onClose} : Props) => {
     if(!isOpen) return null;
+
+    const router = useRouter()
     
     const [order, setOrder] = useState<OrderType | []>([])
     const [treasury, setTreasury] = useState<TreasuryType | []>([])
@@ -95,19 +98,22 @@ export const ModalConfirmationPartial = ({isOpen, token, idUser, idElement, onCl
         setLoading(true)
         const oldValue = (order.value_requested_10 * 10) + (order.value_requested_20 * 20) + (order.value_requested_50 * 50) + (order.value_requested_100 * 100)
         const newValue = (cassA * 10) + (cassB * 20) + (cassC * 50) + (cassD * 100)
-        console.log("Cheguei na função")
         if(newValue <= oldValue){
             const data = {
                 value_confirmed_10 : cassA.toString(),
                 value_confirmed_20 : cassB.toString(),
                 value_confirmed_50 : cassC.toString(),
                 value_confirmed_100 : cassD.toString(),
-                id_status_confirmation_order : '3',
+                id_status_confirmation_order : '3'.toString(),
                 confirmed : true,
             }
-            console.log("Cheguei na função e no if")
-            console.log(data)
             const o = await editOrderForConfirmationPartial(token as string, idUser as string, idElement, data)
+            console.log(o)
+            if(o.success){
+                location.reload()
+            }else{
+                setMsgError('Erro ao Editar o Pedido, tentar mais tarde!')
+            }
         }else{
             setMsgError('O novo valor tem que ser menor ou igual ao pedido antigo')
         }
@@ -120,9 +126,11 @@ export const ModalConfirmationPartial = ({isOpen, token, idUser, idElement, onCl
             <button className="absolute top-0 right-0 p-2 font-bold" onClick={onClose}>X</button>
             <div>
                 <div>
-                    <div>ID : {order.id}</div>
-                    <div>TRANSPORTADORA : {treasury.shortened_name}</div>
-                    <div>VALOR ATUAL: {GenereateTotalValuesCassetesInReal(order.value_requested_10, order.value_requested_20, order.value_requested_10, order.value_requested_100)}</div>
+                    <div>ID : {order.id ? order.id : 'Aguarde...'}</div>
+                    <div>TRANSPORTADORA : {treasury.shortened_name ? treasury.shortened_name : 'Aguarde...'}</div>
+                    <div>VALOR ATUAL: 
+                        {order.value_requested_10 ? GenereateTotalValuesCassetesInReal(order.value_requested_10, order.value_requested_20, order.value_requested_10, order.value_requested_100)  : 'Aguarde...'}
+                    </div>
                 </div>
                 <Divider />
                 <div>
