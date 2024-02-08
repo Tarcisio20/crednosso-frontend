@@ -14,6 +14,7 @@ import { ButtonOptions } from "@/components/admin/ButtonOptions"
 import { OperationTypeType } from "@/types/OperationTypeType"
 import { ModalConfirmationPartial } from "@/components/admin/ModalConfirmationPartial"
 import { ErrorComponent } from "@/components/admin/ErrorComponent"
+import { useRouter } from "next/navigation"
 
 type Props = {
     token : string | undefined;
@@ -21,6 +22,8 @@ type Props = {
 }
 
 export const OrderHome = ({ token, idUser } : Props) => {
+
+    const router = useRouter()
 
     const [loading, setLoading] = useState(false)
     const [orders, setOrders] = useState<OrderType[] | []>([])
@@ -113,6 +116,17 @@ export const OrderHome = ({ token, idUser } : Props) => {
         setLoading(false)
     }
 
+    const viewOrder = () => {
+        setMsgError('')
+        setLoading(true)
+        if(inptusCheckeds.length == 1){
+            router.push(`order/view/${inptusCheckeds[0]}`)
+        }else{
+            setMsgError("Selecionar 1 pedido para Visualizar")
+        }
+        setLoading(false)
+    }
+
     return(
         <>
             <TitlePage title="Pedidos" />
@@ -135,7 +149,7 @@ export const OrderHome = ({ token, idUser } : Props) => {
                     <ButtonOptions label="Gerar Relatório" color="yellow" onClick={()=>{}} />
                     <ButtonOptions label="Relançar Lançamento" color="yellow" onClick={()=>{}} />
                     <ButtonOptions label="Enviar E-mail" color="yellow" onClick={()=>{}} />
-                    <ButtonOptions label="Visualizar Pedido" color="yellow" onClick={()=>{}} />
+                    <ButtonOptions label="Visualizar Pedido" color="yellow" onClick={viewOrder} />
                     <ButtonOptions label="Excluir Pedido" color="red" onClick={()=>{}} />
                 </div>
             </div>
