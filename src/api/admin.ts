@@ -645,3 +645,21 @@ export const editOrderById = async (token : string, idUser : string, id : string
     return false;
   }
 }
+
+
+export const getConfirmatioOrders = async (token : string, idUser : string) => {
+  try {
+    const headersForReq = {
+      ...headersPadrao,
+      Authorization: `Token ${token}`,
+      id: idUser,
+    };
+    const config: AxiosRequestConfig = {
+      headers: headersForReq,
+    };
+    const json = await req.get(`/admin/confirmation_type`,  config);
+    return json.data;
+  } catch (error) {
+    return false;
+  }
+}

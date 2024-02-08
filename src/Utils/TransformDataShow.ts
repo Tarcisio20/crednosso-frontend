@@ -1,6 +1,6 @@
 export const TransformDataShow = (element : string) => {
     const dt = new Date(element)
-    let day = dt.getDay()
+    let day = dt.getDate()
     let mounth = dt.getMonth()
     let year = dt.getFullYear()
 
