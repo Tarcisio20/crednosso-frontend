@@ -7,6 +7,7 @@ import {
   getOrderTypes,
   AddOrder,
   getOrderById,
+  editOrderById,
 } from "@/api/admin";
 import { ButtonForRedirects } from "@/components/admin/ButtonForRedirects";
 import { TitlePage } from "@/components/admin/TitlePage";
@@ -35,6 +36,7 @@ export const OrderView = ({ token, idUser }: Props) => {
   const [operationTypes, setOperationTypes] = useState<OperationTypeType[] | []>([]);
   const [treasuries, setTreasuries] = useState<TreasuryType[] | []>([]);
 
+  const [idOrder, setIdOrder] = useState('')
   const [idOperationType, setIdOperationType] = useState("");
   const [idOrderType, setIdOrderType] = useState("");
   const [idTreasuryOrigin, setIdTreasuryOrigin] = useState("");
@@ -52,11 +54,16 @@ export const OrderView = ({ token, idUser }: Props) => {
   const [cassDValue, setCassDValue] = useState("R$ 0,0");
   const [valueTotal, setValueTotal] = useState("R$ 0,0");
 
+  const [verifyStatus, setVerifyStatus] = useState('')
   const [loading, setLoading] = useState(false);
   const [msgError, setMsgError] = useState("");
 
   useEffect(() => {
     getAllItemsForScreen();
+    if(verifyStatus !== '1'){
+        setLoading(true)
+        setMsgError("Para alterar um pedido ele deve está no Status Pendente")
+    }
   }, []);
 
   useEffect(() => {
@@ -66,6 +73,7 @@ export const OrderView = ({ token, idUser }: Props) => {
   }, [cassA, cassB, cassC, cassD]);
 
   const getAllItemsForScreen = async () => {
+    setMsgError('')
     setLoading(true);
     const orderT = await getOrderTypes(token as string, idUser as string);
     setOrderTypes(orderT.orderTypes);
@@ -95,6 +103,9 @@ export const OrderView = ({ token, idUser }: Props) => {
       GenereateTotalValuesCassetesInReal(or.order[0].value_requested_10, or.order[0].value_requested_20, or.order[0].value_requested_50, or.order[0].value_requested_100)
     );
     setObs(or.order[0].observation)
+    setVerifyStatus(or.order[0].id_status_confirmation_order)
+    setIdOrder(or.order[0].id.toString())
+    if(or.order[0].id_status_confirmation_order !== 1) await alterStatusVerify(or.order[0].id_status_confirmation_order)
     setLoading(false);
   };
 
@@ -120,50 +131,48 @@ export const OrderView = ({ token, idUser }: Props) => {
     }
   };
 
-  const addOrderFunction = async () => {
+  const editOrderFunction = async () => {
     setMsgError("");
     setLoading(true);
-    if (
-      dateOrder !== "" &&
-      idTreasuryOrigin !== "" &&
-      idTreasuryDestiny !== "" &&
-      idOrderType !== ""
-    ) {
-
+   
       const data = {
-        
-        order_date:  TransformData(dateOrder),
-        batch: "0",
-        id_origin_treasury: idTreasuryOrigin.toString(),
-        id_destiny_treasury: idTreasuryDestiny.toString(),
-        id_operation_type: idOperationType.toString(),
-        id_order_type: idOrderType.toString(),
-        batch_treasury: "0",
         value_requested_10: cassA.toString(),
         value_requested_20: cassB.toString(),
         value_requested_50: cassC.toString(),
         value_requested_100: cassD.toString(),
         observation: obs.toString(),
-        id_confirmation : '1'
       }
        
-
-      const or = await AddOrder(token as string, idUser as string, data);
+      
+      const or = await editOrderById(token as string, idUser as string, params.id.toString(), data);
       if (or.error) setMsgError(or.error);
       if (or.success) {
         router.back();
       }
-    } else {
-      setMsgError("Favor, Preencher todos os campos!");
-    }
     setLoading(false);
   };
+
+  const alterStatusVerify = async (id : string) => {
+    setVerifyStatus(id)
+  }
 
   return (
     <>
       <TitlePage title="Editar Pedido" />
       <div className="flex gap-5 w-4/5 p-">
         <div className="flex flex-col gap-3 bg-slate-500 w-full p-5 rounded-md">
+          <div className="flex flex-col gap-2">
+            <label className="font-bold">ID Pedido</label>
+            <div className="text-gray-900 flex items-center">
+              <input
+                  className="w-40 h-6 p-1 text-center outline-none border-2 border-gray-600 mr-2 rounded flex-1"
+                  type="text"
+                  value={idOrder}
+                  onChange={(e) => setIdOrder(e.target.value)}
+                  disabled={true}
+                />
+            </div>
+          </div>
           <div className="flex flex-col gap-2">
             <label className="font-bold">Tipo de Operação</label>
             <div className="text-gray-900 flex items-center">
@@ -172,13 +181,14 @@ export const OrderView = ({ token, idUser }: Props) => {
                 type="text"
                 value={idOperationType}
                 onChange={(e) => setIdOperationType(e.target.value)}
-                disabled={loading}
+                disabled={true}
               />
               <select
                 className="text-gray-900 outline-none border-2 border-gray-600 rounded min-w-52 flex-1 text-center"
                 value={idOperationType}
                 onChange={(e) => setIdOperationType(e.target.value)}
-                disabled={loading}
+                disabled={true}
+                
               >
                 <option value=""></option>
                 {!loading &&
@@ -199,13 +209,13 @@ export const OrderView = ({ token, idUser }: Props) => {
                 type="text"
                 value={idTreasuryOrigin}
                 onChange={(e) => setIdTreasuryOrigin(e.target.value)}
-                disabled={loading}
+                disabled={true}
               />
               <select
                 className="text-gray-900 outline-none border-2 border-gray-600 rounded min-w-52 flex-1 text-center"
                 value={idTreasuryOrigin}
                 onChange={(e) => setIdTreasuryOrigin(e.target.value)}
-                disabled={loading}
+                disabled={true}
               >
                 <option value=""></option>
                 {!loading &&
@@ -226,13 +236,13 @@ export const OrderView = ({ token, idUser }: Props) => {
                 type="text"
                 value={idTreasuryDestiny}
                 onChange={(e) => setIdTreasuryDestiny(e.target.value)}
-                disabled={loading}
+                disabled={true}
               />
               <select
                 className="text-gray-900 outline-none border-2 border-gray-600 rounded min-w-52 flex-1 text-center"
                 value={idTreasuryDestiny}
                 onChange={(e) => setIdTreasuryDestiny(e.target.value)}
-                disabled={loading}
+                disabled={true}
               >
                 <option value=""></option>
                 {!loading &&
@@ -253,7 +263,7 @@ export const OrderView = ({ token, idUser }: Props) => {
                 type="date"
                 value={dateOrder}
                 onChange={(e) => setDateOrder(e.target.value)}
-                disabled={loading}
+                disabled={true}
               />
             </div>
           </div>
@@ -266,13 +276,13 @@ export const OrderView = ({ token, idUser }: Props) => {
                 type="text"
                 value={idOrderType}
                 onChange={(e) => setIdOrderType(e.target.value)}
-                disabled={loading}
+                disabled={true}
               />
               <select
                 className="text-gray-900 outline-none border-2 border-gray-600 rounded min-w-52 flex-1 text-center"
                 value={idOrderType}
                 onChange={(e) => setIdOrderType(e.target.value)}
-                disabled={loading}
+                disabled={true}
               >
                 <option value=""></option>
                 {!loading &&
@@ -287,58 +297,58 @@ export const OrderView = ({ token, idUser }: Props) => {
         </div>
 
         <div className="flex flex-col gap-2 bg-slate-500 w-full p-5 rounded-md">
-          <label className="flex justify-center text-center font-bold uppercase text-gray-900 text-xl">
+          <label className="flex justify-center text-center font-bold uppercase text-slate-200 text-xl">
             Composição
           </label>
           <div className="flex w-full justify-between px-3 gap-1">
             <div className=" w-40 flex flex-col gap-4 text-center">
-              <label className="uppercase text-gray-900 font-bold">
+              <label className="uppercase text-slate-200 font-bold ">
                 CEDULA
               </label>
-              <label className="uppercase text-gray-900 font-bold h-6 flex justify-center items-center">
+              <label className="uppercase text-slate-200 font-bold h-6 flex justify-center items-center">
                 R$ 10,00
               </label>
-              <label className="uppercase text-gray-900 font-bold h-6 flex justify-center items-center">
+              <label className="uppercase text-slate-200 font-bold h-6 flex justify-center items-center">
                 R$ 20,00
               </label>
-              <label className="uppercase text-gray-900 font-bold h-6 flex justify-center items-center">
+              <label className="uppercase text-slate-200 font-bold h-6 flex justify-center items-center">
                 R$ 50,00
               </label>
-              <label className="uppercase text-gray-900 font-bold h-6 flex justify-center items-center">
+              <label className="uppercase text-slate-200 font-bold h-6 flex justify-center items-center">
                 R$ 100,00
               </label>
             </div>
             <div className=" w-1/3 flex flex-col gap-4 text-center items-center">
-              <label className="uppercase text-gray-900 font-bold ">
+              <label className="uppercase text-slate-200 font-bold ">
                 QUANTIDADE
               </label>
               <input
                 className="w-20 h-6 text-gray-900 text-center outline-none rounded"
                 value={cassA}
                 onChange={(e) => alterCass(10, parseInt(e.target.value))}
-                disabled={loading}
+                disabled={verifyStatus !== '' ? true : loading}
               />
               <input
                 className="w-20 h-6 text-gray-900 text-center outline-none rounded"
                 value={cassB}
                 onChange={(e) => alterCass(20, parseInt(e.target.value))}
-                disabled={loading}
+                disabled={verifyStatus !== '' ? true : loading}
               />
               <input
                 className="w-20 h-6 text-gray-900 text-center outline-none rounded"
                 value={cassC}
                 onChange={(e) => alterCass(50, parseInt(e.target.value))}
-                disabled={loading}
+                disabled={verifyStatus !== '' ? true : loading}
               />
               <input
                 className="w-20 h-6 text-gray-900 text-center outline-none rounded"
                 value={cassD}
                 onChange={(e) => alterCass(100, parseInt(e.target.value))}
-                disabled={loading}
+                disabled={verifyStatus !== '' ? true : loading}
               />
             </div>
             <div className=" w-full flex flex-col gap-4 text-center items-center">
-              <label className="uppercase text-gray-900 font-bold">VALOR</label>
+              <label className="uppercase text-slate-200 font-bold">VALOR</label>
               <div className="flex justify-center items-center w-11/12 h-6 text-gray-900 text-center outline-none rounded bg-slate-200 font-bold">
                 {cassAValue}
               </div>
@@ -354,7 +364,7 @@ export const OrderView = ({ token, idUser }: Props) => {
             </div>
           </div>
           <div className="flex w-full justify-between px-3 gap-1">
-            <label className="uppercase text-gray-900 font-bold flex items-center">
+            <label className="uppercase text-slate-200 font-bold flex items-center">
               TOTAL
             </label>
             <div className=" flex justify-center items-center h-6 rounded w-1/2 font-bold bg-slate-300 text-black">
@@ -362,18 +372,18 @@ export const OrderView = ({ token, idUser }: Props) => {
             </div>
           </div>
           <div className="flex flex-col items-center w-full justify-between px-3 gap-1">
-            <label className="uppercase text-gray-900 font-bold flex items-center" >Observação</label>
-            <textarea className="h-8 outline-none rounded  w-full text-black px-1" value={obs} onChange={(e) => setObs(e.target.value)}  disabled={loading} ></textarea>
+            <label className="uppercase text-slate-200 font-bold flex items-center" >Observação</label>
+            <textarea className="h-8 outline-none rounded  w-full text-black px-1" value={obs} onChange={(e) => setObs(e.target.value)}  disabled={verifyStatus !== '' ? true : loading} ></textarea>
           </div>
         </div>
       </div>
       <ButtonComuns
         color="cyan"
-        label={!loading ? "Editar Pedido" : "Aguarde..."}
-        onClick={addOrderFunction}
+        label={!loading && verifyStatus == '' ? "Editar Pedido" : "Aguarde..."}
+        onClick={editOrderFunction}
         disabled={loading}
       />
-      {!loading && msgError !== "" && <ErrorComponent label={msgError} />}
+      {msgError !== "" && <ErrorComponent label={msgError} />}
     </>
   );
 };

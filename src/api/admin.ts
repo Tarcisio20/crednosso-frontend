@@ -621,3 +621,27 @@ export const editOrderForConfirmationTotal = async (token : string, idUser : str
     return false;
   }
 }
+
+type EditOrderInView = {
+  value_requested_10 : string;
+  value_requested_20 : string;
+  value_requested_50 : string;
+  value_requested_100 : string;
+  observation : string;
+}
+export const editOrderById = async (token : string, idUser : string, id : string, data : EditOrderInView) => {
+  try {
+    const headersForReq = {
+      ...headersPadrao,
+      Authorization: `Token ${token}`,
+      id: idUser,
+    };
+    const config: AxiosRequestConfig = {
+      headers: headersForReq,
+    };
+    const json = await req.put(`/admin/order/${id}`, data, config);
+    return json.data;
+  } catch (error) {
+    return false;
+  }
+}
