@@ -646,6 +646,27 @@ export const editOrderById = async (token : string, idUser : string, id : string
   }
 }
 
+type AlterDataprops = {
+  order_date : string;
+  observation : string;
+}
+export const alterDateOrder = async (token : string, idUser : string, id : string, data : AlterDataprops) => {
+  try {
+    const headersForReq = {
+      ...headersPadrao,
+      Authorization: `Token ${token}`,
+      id: idUser,
+    };
+    const config: AxiosRequestConfig = {
+      headers: headersForReq,
+    };
+    const json = await req.put(`/admin/order/${id}`, data, config);
+    return json.data;
+  } catch (error) {
+    return false;
+  }
+}
+
 type CancelOrder = {
   id_status_confirmation_order : string;
   status : boolean;
@@ -666,7 +687,6 @@ export const cancelOrderById = async (token : string, idUser : string, id : stri
     return false;
   }
 }
-
 
 export const getConfirmatioOrders = async (token : string, idUser : string) => {
   try {

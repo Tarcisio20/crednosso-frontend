@@ -1,13 +1,13 @@
-import { GenereateTotalValuesCassetesInReal } from "@/Utils/GenereateTotalValuesCassetesInReal";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { editOrderForConfirmationPartial, getOrderById, getTreasuryById } from "@/api/admin";
 import { OrderType } from "@/types/OrderType";
 import { TreasuryType } from "@/types/TreasuryType";
-import { useEffect, useState } from "react";
 import { Divider } from "./Divider";
+import { GenereateTotalValuesCassetesInReal } from "@/Utils/GenereateTotalValuesCassetesInReal";
 import { GenereateIndividualValuesCassetesInReal } from "@/Utils/GenereateIndividualValuesCassetesInReal";
 import { ButtonComuns } from "./ButtonComuns";
 import { ErrorComponent } from "./ErrorComponent";
-import { useRouter } from "next/navigation";
 
 type Props = {
     isOpen : boolean;
@@ -108,7 +108,6 @@ export const ModalConfirmationPartial = ({isOpen, token, idUser, idElement, onCl
                 confirmed : true,
             }
             const o = await editOrderForConfirmationPartial(token as string, idUser as string, idElement, data)
-            console.log(o)
             if(o.success){
                 location.reload()
             }else{

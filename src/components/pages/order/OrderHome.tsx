@@ -16,6 +16,7 @@ import { ModalConfirmationPartial } from "@/components/admin/ModalConfirmationPa
 import { ErrorComponent } from "@/components/admin/ErrorComponent"
 import { useRouter } from "next/navigation"
 import { ConfirmationOrderType } from "@/types/ConfirmationOrderType"
+import { ModalRelaunchOrder } from "@/components/admin/ModalRelaunchOrder"
 
 type Props = {
     token : string | undefined;
@@ -36,6 +37,7 @@ export const OrderHome = ({ token, idUser } : Props) => {
     const [selectAllInputs, setSelectAllInputs] = useState(0)
 
     const [openModal, setOpenModal] = useState(false)
+    const [openModalRelaunchOrder, setOpenModalRelaunchOrder] = useState(false)
 
     useEffect(()=>{
         getOrderFunction()
@@ -103,6 +105,10 @@ export const OrderHome = ({ token, idUser } : Props) => {
         setOpenModal(false)
     }
 
+    const closeModalRelaunchOrder = () => {
+        setOpenModalRelaunchOrder(false)
+    }
+
     const confirmationTotalFunction = async () => {
         setMsgError('')
         setLoading(true)
@@ -155,7 +161,19 @@ export const OrderHome = ({ token, idUser } : Props) => {
                 if(i.checked) i.click() 
                 setSelectAllInputs(0)
             }
-        }    
+        } 
+ 
+    }
+
+    const relaunchOrder = () => {
+        setMsgError('')
+        setLoading(true)
+        if(inptusCheckeds.length > 0){
+            setOpenModalRelaunchOrder(true)
+        }else{
+            setMsgError("Para alteração de data precisa que seja selecionardo ao menos um pedido")
+        }
+        setLoading(false)  
     }
 
     const viewOrder = () => {
@@ -189,7 +207,7 @@ export const OrderHome = ({ token, idUser } : Props) => {
                     <ButtonOptions label="Gerar Lançamento" color="yellow" disabled={loading} onClick={()=>{}} />
                     <ButtonOptions label="Gerar Pagamento" color="yellow" disabled={loading} onClick={()=>{}} />
                     <ButtonOptions label="Gerar Relatório" color="yellow" disabled={loading} onClick={()=>{}} />
-                    <ButtonOptions label="Relançar Lançamento" color="yellow" disabled={loading} onClick={()=>{}} />
+                    <ButtonOptions label="Relançar Lançamento" color="yellow" disabled={loading} onClick={relaunchOrder} />
                     <ButtonOptions label="Enviar E-mail" color="yellow" disabled={loading} onClick={()=>{}} />
                     <ButtonOptions label="Visualizar Pedido" color="yellow" disabled={loading} onClick={viewOrder} />
                     <ButtonOptions label="Excluir Pedido" color="red" disabled={loading} onClick={cancelOrderFunction} />
@@ -248,6 +266,7 @@ export const OrderHome = ({ token, idUser } : Props) => {
                 {!loading && orders.length <= 0 && <NothingToShow label="Pedidos" />}
             </div>
             {openModal && <ModalConfirmationPartial isOpen={openModal} token={token as string} idUser={idUser as string} idElement={inptusCheckeds[0]} onClose={closeModalFunction} />}
+            {openModalRelaunchOrder && <ModalRelaunchOrder isOpen={openModalRelaunchOrder} token={token as string} idUser={idUser as string} idElements={inptusCheckeds} onClose={closeModalRelaunchOrder}  /> }
             {!loading && msgError !== '' && <ErrorComponent  label={msgError}  />}
         </>
     )
