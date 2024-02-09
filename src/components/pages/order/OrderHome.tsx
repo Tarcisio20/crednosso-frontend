@@ -1,7 +1,7 @@
 "use client"
 
 import { ChangeEvent, useEffect, useState } from "react"
-import { editOrderForConfirmationTotal, getAllOperationType, getAllTreasuries, getConfirmatioOrders, getOrderById, getOrders } from "@/api/admin"
+import { cancelOrderById, editOrderForConfirmationTotal, getAllOperationType, getAllTreasuries, getConfirmatioOrders, getOrderById, getOrders } from "@/api/admin"
 import { OrderType } from "@/types/OrderType"
 import { GenereateTotalValuesCassetesInReal } from "@/Utils/GenereateTotalValuesCassetesInReal"
 import { ButtonForRedirects } from "@/components/admin/ButtonForRedirects"
@@ -33,6 +33,7 @@ export const OrderHome = ({ token, idUser } : Props) => {
     const [confirmationOrders, setConfirmationOrders] = useState<ConfirmationOrderType[] | []>([])
     const [msgError, setMsgError] = useState('')
     const [inptusCheckeds, setInputsCheckeds] = useState<string[]>([])
+    const [selectAllInputs, setSelectAllInputs] = useState(0)
 
     const [openModal, setOpenModal] = useState(false)
 
@@ -116,13 +117,45 @@ export const OrderHome = ({ token, idUser } : Props) => {
                     id_status_confirmation_order : '2'.toString(),
                     confirmed : true,
                 }
-                let or = await editOrderForConfirmationTotal(token as string, idUser as string, inptusCheckeds[i], data)
+                await editOrderForConfirmationTotal(token as string, idUser as string, inptusCheckeds[i], data)
             } 
             location.reload()
         }else{
             setMsgError('Favor selecionar algum pedido para proseguir')
         }
         setLoading(false)
+    }
+
+    const cancelOrderFunction = async () => {
+        setMsgError('')
+        setLoading(true)
+        if(inptusCheckeds.length > 0){
+            for(let i = 0; i < inptusCheckeds.length; i++){
+                let o = await getOrderById(token as string, idUser as string, inptusCheckeds[i])
+                let data = {
+                    id_status_confirmation_order : '4',
+                    status : false
+                }
+                await cancelOrderById(token as string, idUser as string, inptusCheckeds[i], data)
+            }
+        }
+        setLoading(false)
+    }
+
+    const alterSelectAllInputs = (event : ChangeEvent<HTMLInputElement>) => {
+        if(event.target.checked){
+            for(let x = 0; x < orders.length; x++){
+                let i = document.getElementById(orders[x].id.toString()) as HTMLInputElement
+                if(!i.checked) i.click()
+                setSelectAllInputs(orders.length) 
+            }
+        }else{
+            for(let x = 0; x < orders.length; x++){
+                let i = document.getElementById(orders[x].id.toString()) as HTMLInputElement
+                if(i.checked) i.click() 
+                setSelectAllInputs(0)
+            }
+        }    
     }
 
     const viewOrder = () => {
@@ -159,10 +192,17 @@ export const OrderHome = ({ token, idUser } : Props) => {
                     <ButtonOptions label="Relançar Lançamento" color="yellow" disabled={loading} onClick={()=>{}} />
                     <ButtonOptions label="Enviar E-mail" color="yellow" disabled={loading} onClick={()=>{}} />
                     <ButtonOptions label="Visualizar Pedido" color="yellow" disabled={loading} onClick={viewOrder} />
-                    <ButtonOptions label="Excluir Pedido" color="red" disabled={loading} onClick={()=>{}} />
+                    <ButtonOptions label="Excluir Pedido" color="red" disabled={loading} onClick={cancelOrderFunction} />
                 </div>
             </div>
-            <div className="p-4 w-full">
+            <div className="flex justify-between items-center px-4 py-1 w-full">
+                <div className="flex items-center gap-2">
+                    <input type="checkbox" disabled={loading} value={selectAllInputs} onChange={alterSelectAllInputs} />
+                    <label>{selectAllInputs == 0 ? 'Marcar' : 'Desmarcar'} todos</label>
+                </div>
+                <div>{selectAllInputs} {selectAllInputs === 1  ? 'Item' : 'Itens'} selecionado{selectAllInputs === 1 ? '' : 's'}</div>
+            </div>
+            <div className="px-4 py-1 w-full">
                 {!loading && orders.length > 0 &&
                 <table width="100%" className="text-center table-auto border-collapse border rounded">
                 <thead>

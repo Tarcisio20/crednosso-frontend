@@ -646,6 +646,27 @@ export const editOrderById = async (token : string, idUser : string, id : string
   }
 }
 
+type CancelOrder = {
+  id_status_confirmation_order : string;
+  status : boolean;
+}
+export const cancelOrderById = async (token : string, idUser : string, id : string, data: CancelOrder)  => {
+  try {
+    const headersForReq = {
+      ...headersPadrao,
+      Authorization: `Token ${token}`,
+      id: idUser,
+    };
+    const config: AxiosRequestConfig = {
+      headers: headersForReq,
+    };
+    const json = await req.delete(`/admin/order/${id}`, data, config);
+    return json.data;
+  } catch (error) {
+    return false;
+  }
+}
+
 
 export const getConfirmatioOrders = async (token : string, idUser : string) => {
   try {
