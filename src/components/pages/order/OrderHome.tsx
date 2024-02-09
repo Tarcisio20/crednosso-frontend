@@ -234,8 +234,9 @@ export const OrderHome = ({ token, idUser } : Props) => {
                         <th>T. Destino</th>
                         <th>Data Pedido</th>
                         <th>Valor Pedido</th>
-                        <th>Status</th>
+                        <th>Confirmação</th>
                         <th>Vl. Realizado</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -257,7 +258,8 @@ export const OrderHome = ({ token, idUser } : Props) => {
                             <td>{returnConfirmationOrderForId(item.id_status_confirmation_order)}</td>
                             <td>
                             {item.confirmed === false ? 'R$ 00,00' : GenereateTotalValuesCassetesInReal(item.value_confirmed_10, item.value_confirmed_20, item.value_confirmed_50, item.value_confirmed_100)}
-                            </td>    
+                            </td> 
+                            <td>{item.status === true ? 'Ativo' : 'Inativo'}</td>   
                         </tr>
                     ))}
                 </tbody>
